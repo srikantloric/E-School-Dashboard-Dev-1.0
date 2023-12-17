@@ -86,7 +86,7 @@ function ViewStudents() {
   const dipatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
-  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRow, setSelectedRow] = useState("");
 
   //topbar selection state
   const [session, setSession] = useState("2023/24");
@@ -99,7 +99,7 @@ function ViewStudents() {
   const handleModalClose = () => setModalOpen(false);
 
   ///menu state
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const handleMenuClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
@@ -476,7 +476,30 @@ function ViewStudents() {
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                Basic info
+                <Paper sx={{padding:"10px"}}>
+                <table style={Styles.table}>
+               <tr>
+                <td>Name:</td>
+                <td>{selectedRow.student_name}</td>
+               </tr>
+               <tr>
+                <td>Class:</td>
+                <td>{selectedRow.class}</td>
+               </tr>
+               <tr>
+                <td>Roll No:</td>
+                <td>{selectedRow.class_roll}</td>
+               </tr>
+               <tr>
+                <td>Student Id:</td>
+                <td>{selectedRow.student_id}</td>
+               </tr>
+               <tr>
+                <td>Birth Date:</td>
+                <td>{selectedRow.dob}</td>
+               </tr>
+               </table>
+               </Paper>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
                 Parent Info
