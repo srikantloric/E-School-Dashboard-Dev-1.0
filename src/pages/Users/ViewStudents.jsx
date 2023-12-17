@@ -15,7 +15,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Styles from "./ViewStudents.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +44,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { MoreVert } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
-
 
 //tabs
 function CustomTabPanel(props) {
@@ -76,7 +75,7 @@ CustomTabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -87,6 +86,7 @@ function ViewStudents() {
   const dipatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
+  const [selectedRow, setSelectedRow] = useState(null);
 
   //topbar selection state
   const [session, setSession] = useState("2023/24");
@@ -101,8 +101,9 @@ function ViewStudents() {
   ///menu state
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuOpen = Boolean(anchorEl);
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(rowData);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -113,16 +114,15 @@ function ViewStudents() {
     setValue(newValue);
   };
 
-
   const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "60%",
-    
+
     bgcolor: "background.paper",
-    
+
     boxShadow: 24,
     p: 4,
   };
@@ -133,12 +133,12 @@ function ViewStudents() {
   }, []);
 
   const handleFilterButton = () => {
-    if (selectedClass != -1 && selectedSection != -1) {
+    if (selectedClass !== -1 && selectedSection !== -1) {
       let dataNew = data.filter((data) => {
         return data.class === selectedClass && data.section === selectedSection;
       });
       setFilteredData(dataNew);
-    } else if (selectedSection == -1) {
+    } else if (selectedSection === -1) {
       let dataNew = data.filter((data) => {
         return data.class === selectedClass;
       });
@@ -364,7 +364,7 @@ function ViewStudents() {
               ),
               tooltip: "More options",
               onClick: (event, rowData) => {
-                handleMenuClick(rowData);
+                handleMenuClick(event, rowData);
               },
             },
           ]}
@@ -432,63 +432,60 @@ function ViewStudents() {
           aria-describedby="keep-mounted-modal-description"
         >
           <Box sx={style}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div style={{ display: "flex" }}>
-              <div style={{marginTop:"10px"}}>
-                <img
-                  src={data.profil_url}
-                  height={100}
-                  width={90}
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              <div style={{ padding: "5px 15px" }}>
-                <h3>Rohan Mohit</h3>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex" }}>
+                <div style={{ marginTop: "10px" }}>
+                  <img
+                    src={data.profil_url}
+                    height={100}
+                    width={90}
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <div style={{ padding: "5px 15px" }}>
+                  <h3>Rohan Mohit</h3>
 
-                <div style={{ marginTop: "1rem" }}>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Birth:12/12/1975
-                  </p>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Joining : 01/01/2012
-                  </p>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Contact : +91-7979080633
-                  </p>
+                  <div style={{ marginTop: "1rem" }}>
+                    <p style={{ padding: 3, margin: 0 }}>
+                      Date Of Birth:12/12/1975
+                    </p>
+                    <p style={{ padding: 3, margin: 0 }}>
+                      Date Of Joining : 01/01/2012
+                    </p>
+                    <p style={{ padding: 3, margin: 0 }}>
+                      Contact : +91-7979080633
+                    </p>
+                  </div>
                 </div>
               </div>
+              <div></div>
             </div>
-            <div>
-              
-            </div>
-          </div>
-          <Box sx={{ width: '100%' }}>
-
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Basic Info" {...a11yProps(0)} />
-          <Tab label="Parent Info" {...a11yProps(1)} />
-          <Tab label="Exam Marks" {...a11yProps(2)}/>
-          <Tab label="Payment Details" {...a11yProps(3)} />
-        </Tabs>
-      </Box>
-      <CustomTabPanel value={value} index={0}>
-        Basic info
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        Parent Info
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Exam Mark
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        Payment Details
-      </CustomTabPanel>
-    </Box>
-
-
-            
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab label="Basic Info" {...a11yProps(0)} />
+                  <Tab label="Parent Info" {...a11yProps(1)} />
+                  <Tab label="Exam Marks" {...a11yProps(2)} />
+                  <Tab label="Payment Details" {...a11yProps(3)} />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={value} index={0}>
+                Basic info
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                Parent Info
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2}>
+                Exam Mark
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={3}>
+                Payment Details
+              </CustomTabPanel>
+            </Box>
           </Box>
         </Modal>
         ;
