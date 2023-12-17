@@ -141,16 +141,21 @@ function ViewStudents() {
         return data.class === selectedClass && data.section === selectedSection;
       });
       setFilteredData(dataNew);
-      setFilterChipLabel("Filter set for class "+selectedClass+" and section "+selectedSection)
-      setFilterChip(true)
-    } else if (selectedSection === -1 && selectedClass !==-1) {
+      setFilterChipLabel(
+        "Filter set for class " +
+          selectedClass +
+          " and section " +
+          selectedSection
+      );
+      setFilterChip(true);
+    } else if (selectedSection === -1 && selectedClass !== -1) {
       let dataNew = data.filter((data) => {
         return data.class === selectedClass;
       });
       setFilteredData(dataNew);
-      setFilterChipLabel("Filter set for class "+selectedClass)
-      setFilterChip(true)
-    } 
+      setFilterChipLabel("Filter set for class " + selectedClass);
+      setFilterChip(true);
+    }
 
     console.log(selectedClass, selectedSection);
   };
@@ -213,7 +218,7 @@ function ViewStudents() {
     setFilterChip(!filterChip);
     if (filterChip) {
       setSelectedClass(-1);
-      setSelectedSection(-1)
+      setSelectedSection(-1);
     }
   };
 
@@ -325,18 +330,23 @@ function ViewStudents() {
           </div>
         </Paper>
         <br />
-        <div style={{display:"flex",width:"100%",alignItems:"end",alignContent:"end"}}>
-        {
-          filterChip ? <Chip
-            label={filterChipLabel}
-            variant="filled"
-            // onClick={handleClick}
-            onDelete={handleDelete}
-          /> :null
-        }
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "end",
+            alignContent: "end",
+          }}
+        >
+          {filterChip ? (
+            <Chip
+              label={filterChipLabel}
+              variant="filled"
+              // onClick={handleClick}
+              onDelete={handleDelete}
+            />
+          ) : null}
         </div>
-       
-       
         <br></br>
         <MaterialTable
           style={{ display: "grid" }}
@@ -502,44 +512,32 @@ function ViewStudents() {
                     <Tab label="Payment Details" {...a11yProps(3)} />
                   </Tabs>
                 </Box>
-                <CustomTabPanel value={value} index={0}>
-                  Basic info
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
-                  Parent Info
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                  Exam Mark
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={3}>
-                  Payment Details
-                </CustomTabPanel>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                <Paper sx={{padding:"10px"}}>
-                <table style={Styles.table}>
-               <tr>
-                <td>Name:</td>
-                <td>{selectedRow.student_name}</td>
-               </tr>
-               <tr>
-                <td>Class:</td>
-                <td>{selectedRow.class}</td>
-               </tr>
-               <tr>
-                <td>Roll No:</td>
-                <td>{selectedRow.class_roll}</td>
-               </tr>
-               <tr>
-                <td>Student Id:</td>
-                <td>{selectedRow.student_id}</td>
-               </tr>
-               <tr>
-                <td>Birth Date:</td>
-                <td>{selectedRow.dob}</td>
-               </tr>
-               </table>
-               </Paper>
+                <Paper sx={{ padding: "10px" }}>
+                  <table style={Styles.table}>
+                    <tr>
+                      <td>Name:</td>
+                      <td>{selectedRow.student_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Class:</td>
+                      <td>{selectedRow.class}</td>
+                    </tr>
+                    <tr>
+                      <td>Roll No:</td>
+                      <td>{selectedRow.class_roll}</td>
+                    </tr>
+                    <tr>
+                      <td>Student Id:</td>
+                      <td>{selectedRow.student_id}</td>
+                    </tr>
+                    <tr>
+                      <td>Birth Date:</td>
+                      <td>{selectedRow.dob}</td>
+                    </tr>
+                  </table>
+                </Paper>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
                 Parent Info
