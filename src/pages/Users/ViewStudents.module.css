@@ -1,0 +1,12 @@
+.viewStudentHeader {
+  background-color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  color: var(--bs-light);
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.viewStudentHeader h4 {
+  font-weight: 500;
+}/*# sourceMappingURL=ViewStudents.module.css.map */

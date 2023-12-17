@@ -1,0 +1,13 @@
+.address_container{
+    display: flex;
+    min-height: 150px;
+
+}
+.address_container_leftbar{
+    background-color: var(--bs-green);
+    width: 8px;
+}
+.address_container_mainsection{
+    flex: 1;
+    background-color: var(--bs-gray-100);
+}
