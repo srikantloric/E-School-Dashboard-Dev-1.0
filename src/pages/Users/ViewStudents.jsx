@@ -5,13 +5,17 @@ import LSPage from "../../components/Utils/LSPage";
 import {
   Box,
   Breadcrumbs,
+  Button,
   Divider,
   IconButton,
   ListItemIcon,
   Menu,
   Modal,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
+import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import Styles from "./ViewStudents.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +26,7 @@ import GrainIcon from "@mui/icons-material/Grain";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import BlockIcon from "@mui/icons-material/Block";
+
 import {
   FormControl,
   InputLabel,
@@ -38,6 +43,42 @@ import MaterialTable from "@material-table/core";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { MoreVert } from "@mui/icons-material";
+import { IconEdit } from "@tabler/icons-react";
+
+
+//tabs
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
@@ -66,15 +107,22 @@ function ViewStudents() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
 
   const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: "60%",
+    
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    
     boxShadow: 24,
     p: 4,
   };
@@ -316,7 +364,7 @@ function ViewStudents() {
               ),
               tooltip: "More options",
               onClick: (event, rowData) => {
-                handleMenuClick(event);
+                handleMenuClick(rowData);
               },
             },
           ]}
@@ -384,16 +432,63 @@ function ViewStudents() {
           aria-describedby="keep-mounted-modal-description"
         >
           <Box sx={style}>
-            <Typography
-              id="keep-mounted-modal-title"
-              variant="h6"
-              component="h2"
-            >
-              Text in a modal
-            </Typography>
-            <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div style={{ display: "flex" }}>
+              <div style={{marginTop:"10px"}}>
+                <img
+                  src={data.profil_url}
+                  height={100}
+                  width={90}
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div style={{ padding: "5px 15px" }}>
+                <h3>Rohan Mohit</h3>
+
+                <div style={{ marginTop: "1rem" }}>
+                  <p style={{ padding: 3, margin: 0 }}>
+                    Date Of Birth:12/12/1975
+                  </p>
+                  <p style={{ padding: 3, margin: 0 }}>
+                    Date Of Joining : 01/01/2012
+                  </p>
+                  <p style={{ padding: 3, margin: 0 }}>
+                    Contact : +91-7979080633
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              
+            </div>
+          </div>
+          <Box sx={{ width: '100%' }}>
+
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab label="Basic Info" {...a11yProps(0)} />
+          <Tab label="Parent Info" {...a11yProps(1)} />
+          <Tab label="Exam Marks" {...a11yProps(2)}/>
+          <Tab label="Payment Details" {...a11yProps(3)} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        Basic info
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        Parent Info
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        Exam Mark
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        Payment Details
+      </CustomTabPanel>
+    </Box>
+
+
+            
           </Box>
         </Modal>
         ;
