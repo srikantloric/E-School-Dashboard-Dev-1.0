@@ -87,13 +87,9 @@ function ViewStudents() {
   const dipatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
-<<<<<<< HEAD
-  const [selectedRow, setSelectedRow] = useState("");
-=======
   const [selectedRow, setSelectedRow] = useState(null);
   const [filterChip, setFilterChip] = useState(false);
   const [filterChipLabel, setFilterChipLabel] = useState();
->>>>>>> 41b4b91697b94c7bfea395d18bd1dfbcfbe4e5dc
 
   //topbar selection state
   const [session, setSession] = useState("2023/24");
@@ -519,7 +515,6 @@ function ViewStudents() {
                   Payment Details
                 </CustomTabPanel>
               </Box>
-<<<<<<< HEAD
               <CustomTabPanel value={value} index={0}>
                 <Paper sx={{padding:"10px"}}>
                 <table style={Styles.table}>
@@ -555,8 +550,6 @@ function ViewStudents() {
               <CustomTabPanel value={value} index={3}>
                 Payment Details
               </CustomTabPanel>
-=======
->>>>>>> 41b4b91697b94c7bfea395d18bd1dfbcfbe4e5dc
             </Box>
           </Modal>
         ) : null}
