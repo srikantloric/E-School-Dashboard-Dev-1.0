@@ -41,16 +41,16 @@ import { MoreVert } from "@mui/icons-material";
 
 function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
-
   const loading = useSelector((state) => state.student);
 
   const dipatch = useDispatch();
-  const [selection, setSelection] = useState();
-  const [dataByclass, setDatabyclass] = useState();
-  const [classes, setclass] = useState(1);
-  const [section, setSection] = useState();
+
+  const [filteredData, setFilteredData] = useState(Array.from(data));
+
   //topbar selection state
   const [session, setSession] = useState("2023/24");
+  const [selectedClass, setSelectedClass] = useState(-1);
+  const [selectedSection, setSelectedSection] = useState(-1);
 
   //model state
   const [modalOpen, setModalOpen] = useState(false);
@@ -81,25 +81,25 @@ function ViewStudents() {
 
   useEffect(() => {
     dipatch(fetchstudent());
-  }, [dipatch]);
+    console.log("data fetched..");
+  }, []);
 
-  useEffect(() => {
-    setDatabyclass(data);
-  }, [loading]);
+  const handleFilterButton = () => {
+    if (selectedClass != -1 && selectedSection != -1) {
+      let dataNew = data.filter((data) => {
+        return data.class === selectedClass && data.section === selectedSection;
+      });
+      setFilteredData(dataNew);
+    } else if (selectedSection == -1) {
+      let dataNew = data.filter((data) => {
+        return data.class === selectedClass;
+      });
+      setFilteredData(dataNew);
+    }
 
-  useEffect(() => {
-    const filterData = data.filter((ele) => ele.class === classes.classes);
-    const sectionFilter = filterData.filter(
-      (ele) => ele.section === section.section
-    );
+    console.log(selectedClass, selectedSection);
+  };
 
-    setDatabyclass(sectionFilter);
-    setDatabyclass(filterData);
-    console.log(data);
-    console.log(sectionFilter);
-    console.log(classes);
-  }, [classes, section]);
-  
   const deletestudent = (data) => {
     Swal.fire({
       title: "Are you sure?",
@@ -121,7 +121,6 @@ function ViewStudents() {
     navigate(`/update-student/${student.id}`);
   };
 
-  
   //column for material table
   const columnMat = [
     { field: "student_id", title: "ID" },
@@ -134,7 +133,7 @@ function ViewStudents() {
           height: 40,
           borderRadius: "50%",
           cursor: "pointer",
-          objectFit:"cover"
+          objectFit: "cover",
         };
         return <img src={rowData.profil_url} style={styles} />;
       },
@@ -219,14 +218,10 @@ function ViewStudents() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="select class"
-                onChange={(e) =>
-                  setclass((prev) => ({
-                    ...prev,
-                    classes: e.target.value,
-                  }))
-                }
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
               >
-                <MenuItem value={1}>
+                <MenuItem value={-1}>
                   <em>Select</em>
                 </MenuItem>
                 <MenuItem value={1}>One</MenuItem>
@@ -247,14 +242,10 @@ function ViewStudents() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Class"
-                onChange={(e) =>
-                  setSection((prev) => ({
-                    ...prev,
-                    section: e.target.value,
-                  }))
-                }
+                value={selectedSection}
+                onChange={(e) => setSelectedSection(e.target.value)}
               >
-                <MenuItem value={1}>
+                <MenuItem value={-1}>
                   <em>Select</em>
                 </MenuItem>
                 <MenuItem value={"A"}>SEC-A</MenuItem>
@@ -263,7 +254,10 @@ function ViewStudents() {
                 <MenuItem value={"D"}>SEC-D</MenuItem>
               </Select>
             </FormControl>
-            <IconButton sx={{ ml: 2, mr: 2, background: "var(--bs-gray-300)" }}>
+            <IconButton
+              sx={{ ml: 2, mr: 2, background: "var(--bs-gray-300)" }}
+              onClick={handleFilterButton}
+            >
               <SearchIcon />
             </IconButton>
           </div>
@@ -272,7 +266,7 @@ function ViewStudents() {
         <MaterialTable
           style={{ display: "grid" }}
           columns={columnMat}
-          data={dataByclass}
+          data={filteredData}
           title="Students Data"
           options={{
             grouping: true,
@@ -296,7 +290,7 @@ function ViewStudents() {
           }}
           actions={[
             {
-              icon: () => <EditIcon sx={{color:"var(--bs-primary)"}}/>,
+              icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
               tooltip: "Edit Row",
               onClick: (event, rowData) => {
                 updatestudent(rowData);
