@@ -364,6 +364,7 @@ function ViewStudents() {
               ),
               tooltip: "More options",
               onClick: (event, rowData) => {
+                console.log(rowData)
                 handleMenuClick(event, rowData);
               },
             },
@@ -424,6 +425,7 @@ function ViewStudents() {
             Suspend User
           </MenuItem>
         </Menu>
+       
         <Modal
           keepMounted
           open={modalOpen}
@@ -436,7 +438,7 @@ function ViewStudents() {
               <div style={{ display: "flex" }}>
                 <div style={{ marginTop: "10px" }}>
                   <img
-                    src={data.profil_url}
+                    src={selectedRow.profil_url}
                     height={100}
                     width={90}
                     style={{ objectFit: "cover" }}
