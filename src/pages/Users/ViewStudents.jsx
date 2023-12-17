@@ -6,6 +6,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Chip,
   Divider,
   IconButton,
   ListItemIcon,
@@ -87,6 +88,8 @@ function ViewStudents() {
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
   const [selectedRow, setSelectedRow] = useState(null);
+  const [filterChip, setFilterChip] = useState(false);
+  const [filterChipLabel, setFilterChipLabel] = useState();
 
   //topbar selection state
   const [session, setSession] = useState("2023/24");
@@ -138,12 +141,16 @@ function ViewStudents() {
         return data.class === selectedClass && data.section === selectedSection;
       });
       setFilteredData(dataNew);
-    } else if (selectedSection === -1) {
+      setFilterChipLabel("Filter set for class "+selectedClass+" and section "+selectedSection)
+      setFilterChip(true)
+    } else if (selectedSection === -1 && selectedClass !==-1) {
       let dataNew = data.filter((data) => {
         return data.class === selectedClass;
       });
       setFilteredData(dataNew);
-    }
+      setFilterChipLabel("Filter set for class "+selectedClass)
+      setFilterChip(true)
+    } 
 
     console.log(selectedClass, selectedSection);
   };
@@ -202,6 +209,13 @@ function ViewStudents() {
     // { field: "Address", title: "Address" },
     // { field: "PostalCode", title: "Postalcode" },
   ];
+  const handleDelete = () => {
+    setFilterChip(!filterChip);
+    if (filterChip) {
+      setSelectedClass(-1);
+      setSelectedSection(-1)
+    }
+  };
 
   if (loading === true) return <h1>loading</h1>;
   return (
@@ -311,6 +325,19 @@ function ViewStudents() {
           </div>
         </Paper>
         <br />
+        <div style={{display:"flex",width:"100%",alignItems:"end",alignContent:"end"}}>
+        {
+          filterChip ? <Chip
+            label={filterChipLabel}
+            variant="filled"
+            // onClick={handleClick}
+            onDelete={handleDelete}
+          /> :null
+        }
+        </div>
+       
+       
+        <br></br>
         <MaterialTable
           style={{ display: "grid" }}
           columns={columnMat}
@@ -364,7 +391,7 @@ function ViewStudents() {
               ),
               tooltip: "More options",
               onClick: (event, rowData) => {
-                console.log(rowData)
+                console.log(rowData);
                 handleMenuClick(event, rowData);
               },
             },
@@ -425,71 +452,72 @@ function ViewStudents() {
             Suspend User
           </MenuItem>
         </Menu>
-       
-        <Modal
-          keepMounted
-          open={modalOpen}
-          onClose={handleModalClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
-          <Box sx={style}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div style={{ display: "flex" }}>
-                <div style={{ marginTop: "10px" }}>
-                  <img
-                    src={selectedRow.profil_url}
-                    height={100}
-                    width={90}
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-                <div style={{ padding: "5px 15px" }}>
-                  <h3>Rohan Mohit</h3>
+        {selectedRow ? (
+          <Modal
+            keepMounted
+            open={modalOpen}
+            onClose={handleModalClose}
+            aria-labelledby="keep-mounted-modal-title"
+            aria-describedby="keep-mounted-modal-description"
+          >
+            <Box sx={style}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ display: "flex" }}>
+                  <div style={{ marginTop: "10px" }}>
+                    <img
+                      src={selectedRow.profil_url}
+                      height={100}
+                      width={90}
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div style={{ padding: "5px 15px" }}>
+                    <h3>Rohan Mohit</h3>
 
-                  <div style={{ marginTop: "1rem" }}>
-                    <p style={{ padding: 3, margin: 0 }}>
-                      Date Of Birth:12/12/1975
-                    </p>
-                    <p style={{ padding: 3, margin: 0 }}>
-                      Date Of Joining : 01/01/2012
-                    </p>
-                    <p style={{ padding: 3, margin: 0 }}>
-                      Contact : +91-7979080633
-                    </p>
+                    <div style={{ marginTop: "1rem" }}>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Date Of Birth:12/12/1975
+                      </p>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Date Of Joining : 01/01/2012
+                      </p>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Contact : +91-7979080633
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <div></div>
               </div>
-              <div></div>
-            </div>
-            <Box sx={{ width: "100%" }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
-                  <Tab label="Basic Info" {...a11yProps(0)} />
-                  <Tab label="Parent Info" {...a11yProps(1)} />
-                  <Tab label="Exam Marks" {...a11yProps(2)} />
-                  <Tab label="Payment Details" {...a11yProps(3)} />
-                </Tabs>
+              <Box sx={{ width: "100%" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="Basic Info" {...a11yProps(0)} />
+                    <Tab label="Parent Info" {...a11yProps(1)} />
+                    <Tab label="Exam Marks" {...a11yProps(2)} />
+                    <Tab label="Payment Details" {...a11yProps(3)} />
+                  </Tabs>
+                </Box>
+                <CustomTabPanel value={value} index={0}>
+                  Basic info
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={1}>
+                  Parent Info
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={2}>
+                  Exam Mark
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={3}>
+                  Payment Details
+                </CustomTabPanel>
               </Box>
-              <CustomTabPanel value={value} index={0}>
-                Basic info
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={1}>
-                Parent Info
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={2}>
-                Exam Mark
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={3}>
-                Payment Details
-              </CustomTabPanel>
             </Box>
-          </Box>
-        </Modal>
+          </Modal>
+        ) : null}
         ;
       </LSPage>
     </PageContainer>
