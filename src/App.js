@@ -55,7 +55,6 @@ function App() {
            <Route path="/login" element={<AuthenticationLayout/>}>
               <Route index element={<Login />} />
            </Route>
-
         </Routes>
       </AuthProvider>
        
