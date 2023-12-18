@@ -9,6 +9,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  LinearProgress,
   ListItemIcon,
   Menu,
   Modal,
@@ -45,6 +46,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { MoreVert } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
+import { useSnackbar } from "notistack";
 
 //tabs
 function CustomTabPanel(props) {
@@ -82,7 +84,12 @@ function a11yProps(index) {
 
 function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
-  const loading = useSelector((state) => state.student);
+  const isDataLoading = useSelector((state) => state.student.loading);
+  const error = useSelector((state) => state.student.error);
+  // console.log(loading)
+
+  const { enqueueSnackbar } = useSnackbar();
+
 
   const dipatch = useDispatch();
 
@@ -131,9 +138,22 @@ function ViewStudents() {
   };
 
   useEffect(() => {
-    dipatch(fetchstudent());
-    console.log("data fetched..");
+    if (Array.from(data).length===0) {
+      dipatch(fetchstudent());
+    }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      enqueueSnackbar("ERROR:" + error,"error");
+    }
+  }, [error]);
+  useEffect(() => {
+    if (!isDataLoading) {
+      setFilteredData(data)
+    }
+  }, [isDataLoading]);
+
 
   const handleFilterButton = () => {
     if (selectedClass !== -1 && selectedSection !== -1) {
@@ -187,7 +207,7 @@ function ViewStudents() {
     {
       title: "Profile",
       field: "profil_url",
-      export:false,
+      export: false,
       render: (rowData) => {
         const styles = {
           width: 40,
@@ -220,11 +240,11 @@ function ViewStudents() {
     if (filterChip) {
       setSelectedClass(-1);
       setSelectedSection(-1);
-      setFilteredData(data)
+      setFilteredData(data);
     }
   };
 
-  if (loading === true) return <h1>loading</h1>;
+  // if (loading === true) return <h1>loading</h1>;/
   return (
     <PageContainer className={Styles.page}>
       <Navbar />
@@ -349,6 +369,12 @@ function ViewStudents() {
             />
           ) : null}
         </div>
+          
+          <Box sx={{ width: "100%" }}>
+          {/* <LinearProgress /> */}
+          {isDataLoading?<LinearProgress/>:null}
+          </Box>
+        
         <br></br>
         <MaterialTable
           style={{ display: "grid" }}

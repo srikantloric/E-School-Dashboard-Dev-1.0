@@ -71,22 +71,21 @@ export const addstudent = createAsyncThunk(
 //FETCH STUDENT
 export const fetchstudent = createAsyncThunk(
   "student/fetchstudent",
-  async (classes) => {
-    const students = [];
-
-    await db
-      .collection("STUDENTS")
-      .get()
-      .then((snap) => {
+  () => {
+    console.log("fetch data query triggered")
+    return db
+    .collection("STUDENTS")
+    .get()
+    .then((snap) => {
+      const students = [];
         snap.forEach((doc) => {
           students.push({ ...doc.data(), id: doc.id });
         });
+        return students;
       })
-      .catch((e) => {
-        console.log(e);
-      });
-    console.log(students);
-    return students;
+
+    // console.log(students);
+    // return students;
   }
 );
 
@@ -144,7 +143,7 @@ const studentslice = createSlice({
   name: "student",
   initialState: {
     studentarray: [],
-    loading: false,
+    loading: true,
     error: null,
   },
   // reducers:{
@@ -160,16 +159,19 @@ const studentslice = createSlice({
       state.studentarray.push(action.payload);
     },
 
+
     [fetchstudent.pending]: (state) => {
       state.loading = true;
     },
     [fetchstudent.fulfilled]: (state, action) => {
       state.loading = false;
+      
       state.studentarray = action.payload;
+
     },
     [fetchstudent.rejected]: (state, action) => {
       state.loading = false;
-      state.error = action.payload.message;
+      state.error = action.error.message;
     },
     [deleltedata.pending]: (state) => {
       state.loading = true;
