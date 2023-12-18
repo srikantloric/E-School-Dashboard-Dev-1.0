@@ -484,11 +484,11 @@ function ViewStudents() {
                     />
                   </div>
                   <div style={{ padding: "5px 15px" }}>
-                    <h3>Rohan Mohit</h3>
+                    <h3>{selectedRow.student_name}</h3>
 
                     <div style={{ marginTop: "1rem" }}>
                       <p style={{ padding: 3, margin: 0 }}>
-                        Date Of Birth:12/12/1975
+                        Date Of Birth:{selectedRow.dob}
                       </p>
                       <p style={{ padding: 3, margin: 0 }}>
                         Date Of Joining : 01/01/2012
@@ -517,8 +517,8 @@ function ViewStudents() {
               </Box>
               <CustomTabPanel value={value} index={0}>
                 <Paper sx={{ padding: "10px" }}>
-                  <table style={Styles.table}>
-                    <tr>
+                  <table style={{padding:"1rem"}}>
+                    <tr >
                       <td>Name:</td>
                       <td>{selectedRow.student_name}</td>
                     </tr>
@@ -538,11 +538,46 @@ function ViewStudents() {
                       <td>Birth Date:</td>
                       <td>{selectedRow.dob}</td>
                     </tr>
+                    <tr>
+                      <td>Cast:</td>
+                      <td>{selectedRow.cast}</td>
+                    </tr>
                   </table>
                 </Paper>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
-                Parent Info
+              <Paper sx={{ padding: "10px" }}>
+                  <table style={Styles.table}>
+                    <tr>
+                      <td>Father Name:</td>
+                      <td>{selectedRow.father_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Father Occupation:</td>
+                      <td>{selectedRow.father_occupation}</td>
+                    </tr>
+                    <tr>
+                      <td>Father Qulifiation:</td>
+                      <td>{selectedRow.father_qualification}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Name:</td>
+                      <td>{selectedRow.mother_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Occupation:</td>
+                      <td>{selectedRow.mother_occupation}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Qulification:</td>
+                      <td>{selectedRow.motherqualifiation}</td>
+                    </tr>
+                    <tr>
+                      <td>Contact Number:</td>
+                      <td>{selectedRow.Contactnumber}</td>
+                    </tr>
+                  </table>
+                </Paper>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={2}>
                 Exam Mark
