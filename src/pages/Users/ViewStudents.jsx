@@ -543,7 +543,7 @@ function ViewStudents() {
               </Box>
               <CustomTabPanel value={value} index={0}>
                 <Paper sx={{ padding: "10px" }}>
-                  <table style={{padding:"1rem"}}>
+                  <table className={Styles.table}>
                     <tr >
                       <td>Name:</td>
                       <td>{selectedRow.student_name}</td>
@@ -573,7 +573,7 @@ function ViewStudents() {
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
               <Paper sx={{ padding: "10px" }}>
-                  <table style={Styles.table}>
+                  <table className={Styles.table}>
                     <tr>
                       <td>Father Name:</td>
                       <td>{selectedRow.father_name}</td>
