@@ -307,7 +307,7 @@ function AddStudent() {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      Cast: e.target.value,
+                      cast: e.target.value,
                     }))
                   }
                   variant="outlined"
