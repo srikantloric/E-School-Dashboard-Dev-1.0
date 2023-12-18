@@ -187,6 +187,7 @@ function ViewStudents() {
     {
       title: "Profile",
       field: "profil_url",
+      export:false,
       render: (rowData) => {
         const styles = {
           width: 40,
@@ -219,6 +220,7 @@ function ViewStudents() {
     if (filterChip) {
       setSelectedClass(-1);
       setSelectedSection(-1);
+      setFilteredData(data)
     }
   };
 
