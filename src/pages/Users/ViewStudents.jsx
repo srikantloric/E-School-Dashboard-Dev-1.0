@@ -90,7 +90,6 @@ function ViewStudents() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-
   const dipatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
@@ -130,7 +129,7 @@ function ViewStudents() {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "60%",
-
+    minHeight: "550px",
     bgcolor: "background.paper",
 
     boxShadow: 24,
@@ -138,22 +137,21 @@ function ViewStudents() {
   };
 
   useEffect(() => {
-    if (Array.from(data).length===0) {
+    if (Array.from(data).length === 0) {
       dipatch(fetchstudent());
     }
   }, []);
 
   useEffect(() => {
     if (error) {
-      enqueueSnackbar("ERROR:" + error,"error");
+      enqueueSnackbar("ERROR:" + error, "error");
     }
   }, [error]);
   useEffect(() => {
     if (!isDataLoading) {
-      setFilteredData(data)
+      setFilteredData(data);
     }
   }, [isDataLoading]);
-
 
   const handleFilterButton = () => {
     if (selectedClass !== -1 && selectedSection !== -1) {
@@ -369,12 +367,10 @@ function ViewStudents() {
             />
           ) : null}
         </div>
-          
-          <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%" }}>
           {/* <LinearProgress /> */}
-          {isDataLoading?<LinearProgress/>:null}
-          </Box>
-        
+          {isDataLoading ? <LinearProgress /> : null}
+        </Box>
         <br></br>
         <MaterialTable
           style={{ display: "grid" }}
@@ -497,6 +493,7 @@ function ViewStudents() {
             onClose={handleModalClose}
             aria-labelledby="keep-mounted-modal-title"
             aria-describedby="keep-mounted-modal-description"
+            sx={{ minHeight: "400px" }}
           >
             <Box sx={style}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -542,9 +539,9 @@ function ViewStudents() {
                 </Box>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                <Paper sx={{ padding: "10px" }}>
+                <Paper sx={{ padding: "1rem" }}>
                   <table className={Styles.table}>
-                    <tr >
+                    <tr>
                       <td>Name:</td>
                       <td>{selectedRow.student_name}</td>
                     </tr>
@@ -572,7 +569,7 @@ function ViewStudents() {
                 </Paper>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
-              <Paper sx={{ padding: "10px" }}>
+                <Paper sx={{ padding: "10px" }}>
                   <table className={Styles.table}>
                     <tr>
                       <td>Father Name:</td>
@@ -608,8 +605,74 @@ function ViewStudents() {
               <CustomTabPanel value={value} index={2}>
                 Exam Mark
               </CustomTabPanel>
-              <CustomTabPanel value={value} index={3}>
-                Payment Details
+              <CustomTabPanel
+                className={Styles.paymentcontain}
+                value={value}
+                index={3}
+              >
+                <div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023 </p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                 
+                </div>
               </CustomTabPanel>
             </Box>
           </Modal>
