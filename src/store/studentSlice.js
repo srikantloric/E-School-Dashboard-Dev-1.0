@@ -4,6 +4,7 @@ import firebase from "../firebase";
 
 import { Alert, Alert2 } from "../components/Utils/Alert";
 import Swal from "sweetalert2";
+import { FEMALE_DUMMY, MALE_DUMMY } from "../assets/dummyProfil";
 
 
 //ADD STUDENT
@@ -76,6 +77,23 @@ export const addstudent = createAsyncThunk(
                 }
               );
             } else {
+              
+              let fData = {
+                profil_url:studentData.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
+                time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
+              };
+              ///saving image url in doc
+              return db.collection("STUDENTS")
+                .doc(userId)
+                .update(fData)
+                .then(() => {
+                  return "user image inserted successfully";
+                }).catch((er) => {
+                  return rejectWithValue(er)
+                });
+            
+          
+
               console.log("no image attached")
             }
 
