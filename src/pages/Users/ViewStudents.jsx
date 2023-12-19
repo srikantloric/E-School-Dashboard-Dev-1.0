@@ -201,7 +201,13 @@ function ViewStudents() {
 
   //column for material table
   const columnMat = [
-    { field: "student_id", title: "ID" },
+    {
+      field: "student_id", title: "ID", render: (rowData) => {
+        const id = ""+rowData.student_id;
+        
+        return <h5>{id.split("@")[0].toLocaleUpperCase()}</h5>
+        
+    }},
     {
       title: "Profile",
       field: "profil_url",
