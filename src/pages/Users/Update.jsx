@@ -52,7 +52,7 @@ function UpdateStudent() {
       updatedatastudent({ studentdata: updatedata, imageupdate: selectedImage })
     );
   };
-  console.log(updatedata);
+  
 
   //   const [formData, setFormData] = useState({
   //     Name: "",
@@ -286,11 +286,11 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Cast"
-                  value={updatedata && updatedata.Cast}
+                  value={updatedata && updatedata.cast}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Cast: e.target.value,
+                      cast: e.target.value,
                     }))
                   }
                   variant="outlined"

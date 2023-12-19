@@ -514,7 +514,7 @@ function ViewStudents() {
                         Date Of Birth:{selectedRow.dob}
                       </p>
                       <p style={{ padding: 3, margin: 0 }}>
-                        Date Of Joining : 01/01/2012
+                        Date Of Admission : {selectedRow.date_of_addmission}
                       </p>
                       <p style={{ padding: 3, margin: 0 }}>
                         Contact : +91-7979080633
