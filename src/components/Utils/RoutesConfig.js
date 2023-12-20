@@ -5,6 +5,7 @@ import Attendance from "../../pages/Attendance/Attendance";
 import { IconCoinRupee, IconDashboard, IconFingerprint, IconFriends, IconMail, IconNotes, IconPoint, IconReceipt2, IconUsers } from "@tabler/icons-react";
 import AddStudent from "../../pages/Users/AddStudent";
 import UnderConstruction from "../../pages/Extras/UnderConstruction";
+import FeeManager from "../../pages/FeeManager/FeeManager";
 export const routesConfig =
     [
         {
@@ -70,7 +71,7 @@ export const routesConfig =
             icon: IconCoinRupee,
             isCollapsable: false,
             isHeader: false,
-            Component: UnderConstruction,
+            Component: FeeManager,
             
         },
         {
