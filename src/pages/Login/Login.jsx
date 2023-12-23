@@ -97,7 +97,8 @@ function Login() {
           <img src={DashboardConfig.logo} alt="logo" className="logo" />
           <h2>Hello Again!</h2>
           <p>
-          Welcome to School Management Dashboard: Elevating Education Effortlessly!
+            Welcome to School Management Dashboard: Elevating Education
+            Effortlessly!
           </p>
           <form className="form-control" onSubmit={handleOnSubmit}>
             <FormControl
