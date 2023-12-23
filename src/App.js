@@ -15,6 +15,8 @@ import ViewStudents from "./pages/Users/ViewStudents";
 import UnderConstruction from "./pages/Extras/UnderConstruction";
 import UpdateStudent from "./pages/Users/Update";
 import FacultyDetail from "./pages/FacutyManagment/FacultyDetail"
+import StudentFeeList from "./pages/FeeManager/StudentFeeDetails";
+import StudentFeeDetails from "./pages/FeeManager/StudentFeeDetails";
 
 
 
@@ -51,6 +53,7 @@ function App() {
             <Route path="/view-faculties" element={<UnderConstruction />} />
             <Route path="/Faculties/:id" element={<FacultyDetail />} />
             <Route path="/add-faculty" element={<UnderConstruction />} />
+            <Route path="/FeeManagement/FeeDetails/:id" element={<StudentFeeDetails />} />
           </Route>          
            <Route path="/login" element={<AuthenticationLayout/>}>
               <Route index element={<Login />} />

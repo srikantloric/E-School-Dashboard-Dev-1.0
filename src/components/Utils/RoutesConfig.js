@@ -57,16 +57,7 @@ export const routesConfig =
             isHeader: true
         },
         {
-            title: "Attendance",
-            to: "/Attendance",
-            icon: IconFingerprint,
-            isCollapsable: false,
-            isHeader: false,
-            Component: UnderConstruction,
-          
-        },
-        {
-            title: "Fee Payment",
+            title: "Fee Management",
             to: "/FeeManagement",
             icon: IconCoinRupee,
             isCollapsable: false,
@@ -74,6 +65,16 @@ export const routesConfig =
             Component: FeeManager,
             
         },
+        {
+            title: "Attendance Management",
+            to: "/Attendance",
+            icon: IconFingerprint,
+            isCollapsable: false,
+            isHeader: false,
+            Component: UnderConstruction,
+          
+        },
+     
         {
             title: "Fee Receipt",
             to: "/FeeReceipt",

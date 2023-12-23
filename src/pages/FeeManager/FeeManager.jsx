@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import LSPage from "../../components/Utils/LSPage";
 import PropTypes from "prop-types";
-import GrainIcon from "@mui/icons-material/Grain";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import {
-  Breadcrumbs,
-  Paper,
-  Typography,
-  Button,
-  Tabs,
-  Tab,
-  Box,
-} from "@mui/material";
+import GrainIcon from "@mui/icons-material/Grain";
+import { Breadcrumbs, Typography, Button, Tabs, Tab, Box, createFilterOptions } from "@mui/material";
 import PageContainer from "../../components/Utils/PageContainer";
 import Input from "@mui/joy/Input";
-import MaterialTable from "@material-table/core";
-import { TabList, TabPanel } from "@mui/joy";
+import Footer from "../../components/Footer/Footer";
+import { useNavigate } from "react-router-dom";
+import {
+  Autocomplete,
+  AutocompleteOption,
+  ListItemContent,
+  ListItemDecorator,
+} from "@mui/joy";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchstudent } from "../../store/studentSlice";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,12 +51,50 @@ function a11yProps(index) {
   };
 }
 
+//main code
 function FeeManager() {
   const [value, setValue] = React.useState(0);
+  const historyRef = useNavigate();
+
+  const dispatch = useDispatch();
+  const data = Array.from(useSelector((state) => state.student.studentarray));
+
+  const [searchList, setSearchList] = useState([]);
+  const [selectedDoc,setSelectedDoc] = useState(null)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (data) {
+      const filteredDatadata = [];
+      data.forEach((item) => {
+        const obj = {
+          id: item.id,
+          name: item.student_name,
+          admission: item.admission_no,
+          profile: item.profil_url,
+          sId: item.student_id,
+          dob:item.dob,
+        };
+        filteredDatadata.push(obj);
+      });
+      setSearchList(filteredDatadata)
+    }
+  }, []);
+
+  useEffect(() => {
+    if (Array.from(data).length === 0) {
+      dispatch(fetchstudent());
+    }
+    console.log(data);
+  }, []);
+
+
+const filterOptions = createFilterOptions({
+  stringify: option => option.name + option.sId + option.admission
+});
 
   return (
     <PageContainer>
@@ -88,13 +126,13 @@ function FeeManager() {
               color="text.secondary"
             >
               <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
-              Fee Details
+              Search Student
             </Typography>
           </Breadcrumbs>
         </div>
 
         {/* <Paper sx={{ p: "5px", mt: "12px" ,display:"flex",alignItems:"center",mb:"10px"}}> */}
-        <Box sx={{ width: "100%",mt:"16px" }}>
+        <Box sx={{ width: "100%", mt: "16px" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
               value={value}
@@ -116,22 +154,54 @@ function FeeManager() {
           <CustomTabPanel value={value} index={0}>
             <div
               style={{
-         
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                height: "30vh",
               }}
             >
-              <Input
+              <Autocomplete
+                id="country-select-demo"
                 color="primary"
-                sx={{ width: "400px", m: "10px" }}
-                variant="outlined"
+                onChange={(e,val) => {setSelectedDoc(val.id)}}
                 placeholder="Search with Student ID/Admission No"
+                // slotProps={{
+                //   input: {
+                //     autoComplete: "new-password", // disable autocomplete and autofill
+                //   },
+                // }}
+                sx={{ width: "450px", m: "10px" }}
+                options={searchList}
+                autoHighlight
+                getOptionLabel={(option) => `${option.name +" - "+ option.id}`}
+                filterOptions={filterOptions}
+                renderOption={(props, option) => (
+                  <AutocompleteOption {...props}>
+                    <ListItemDecorator>
+                      <img
+                        loading="lazy"
+                        width="20"
+                        src={`${option.profile}`}
+                        alt=""
+                      />
+                    </ListItemDecorator>
+                    <ListItemContent sx={{ fontSize: "sm" }}>
+                      <b>{option.name}</b>
+                      <Typography level="body-xs">
+                      OPS{option.admission} | {option.dob}
+                      </Typography>
+                    </ListItemContent>
+                  </AutocompleteOption>
+                )}
               />
+
               <Button
                 variant="contained"
                 sx={{ height: "36px" }}
                 disableElevation
+                onClick={() => {
+                  historyRef(`${'FeeDetails/'+selectedDoc}`);
+                }}
               >
                 Search
               </Button>
@@ -141,9 +211,9 @@ function FeeManager() {
             In-Progress
           </CustomTabPanel>
         </Box>
-
         {/* </Paper> */}
       </LSPage>
+      <Footer />
     </PageContainer>
   );
 }
