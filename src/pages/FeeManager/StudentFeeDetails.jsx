@@ -40,21 +40,19 @@ function StudentFeeDetails() {
   const [anchorEll, setAnchorEll] = useState(null);
   const menuOpen = Boolean(anchorEll);
   const handleMenuClick = (event, rowData) => {
-    console.log(event.currentTarget);
     setAnchorEll(event.currentTarget);
-    // setSelectedRow(rowData);
+    setSelectedRow(rowData);
   };
   const handleMenuClose = () => {
     setAnchorEll(null);
   };
   //Eof Menu State
 
-  // const DEMO_DATA = [
-  //   { id: 2, name: "Joe" },
-  //   { id: 1, name: "Mary" },
-  // ];
   const DEMO_COLS = [
-    { field: "payment_id", title: "Payment ID" },
+    {
+      field: "id",
+      title: "Payment ID",
+    },
     // { field: "name", title: "Student" },
     // { field: "name", title: "Parent" },
     { field: "fee_title", title: "Fee Title" },
@@ -106,10 +104,13 @@ function StudentFeeDetails() {
           if (documetSnap.size) {
             var feeArr = [];
             documetSnap.forEach((doc) => {
-              console.log(doc.data());
+              const dataMod = {
+                id: doc.data().payement_id,
+              };
               feeArr.push(doc.data());
             });
           }
+          enqueueSnackbar("fetched successfully..");
           setFeeDetails(feeArr);
         })
         .catch((e) => {
@@ -160,7 +161,7 @@ function StudentFeeDetails() {
             startIcon={<ControlPointIcon />}
             variant="contained"
             disableElevation
-            onClick={() => {
+            onClick={(e) => {
               historyRef("/FeeManagement");
             }}
           >
@@ -183,9 +184,10 @@ function StudentFeeDetails() {
           </Typography>
         </Paper>
         <br />
-        <Paper>
+
+        {feeDetails ? (
           <MaterialTable
-            style={{ boxShadow: "none", display: "grid" }}
+            style={{ display: "grid" }}
             columns={DEMO_COLS}
             data={feeDetails}
             title="Fee Details"
@@ -194,6 +196,7 @@ function StudentFeeDetails() {
                 backgroundColor: "var(--bs-secondary)",
                 color: "#FFF",
               },
+              exportAllData:true,
               exportMenu: [
                 {
                   label: "Export PDF",
@@ -214,6 +217,7 @@ function StudentFeeDetails() {
                 tooltip: "Edit Row",
                 onClick: (event, rowData) => {
                   // updatestudent(rowData);
+                  handleMenuClick(event);
                 },
               },
               {
@@ -226,83 +230,84 @@ function StudentFeeDetails() {
                 ),
                 tooltip: "More options",
                 onClick: (event, rowData) => {
-                  
-                  handleMenuClick(event, rowData);
+                  // console.log(rowData);
+                  handleMenuClick(event);
                 },
               },
             ]}
-          />{" "}
-          <Menu
-            anchorEl={anchorEll}
-            id="account-menu"
-            open={menuOpen}
-            onClose={handleMenuClose}
-            onClick={handleMenuClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&:before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
+          />
+        ) : null}
+
+        <Menu
+          anchorEl={anchorEll}
+          id="account-menu"
+          open={menuOpen}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: "visible",
+              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              mt: 1.5,
+              "& .MuiAvatar-root": {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
               },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <MenuItem>
-              <ListItemIcon>
-                <PaymentIcon fontSize="small" />
-              </ListItemIcon>
-              Quick Payment
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleMenuClick}>
-              <ListItemIcon>
-                <PaymentIcon fontSize="small" />
-              </ListItemIcon>
-              Pay All :Student
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleMenuClick}>
-              <ListItemIcon>
-                <PrintIcon fontSize="small" />
-              </ListItemIcon>
-              Print Voucher
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleMenuClick}>
-              <ListItemIcon>
-                <Edit fontSize="small" />
-              </ListItemIcon>
-              Edit
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleMenuClick}>
-              <ListItemIcon>
-                <Delete fontSize="small" />
-              </ListItemIcon>
-              Delete
-            </MenuItem>
-          </Menu>
-        </Paper>
+              "&:before": {
+                content: '""',
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+          <MenuItem>
+            <ListItemIcon>
+              <PaymentIcon fontSize="small" />
+            </ListItemIcon>
+            Quick Payment
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleMenuClick}>
+            <ListItemIcon>
+              <PaymentIcon fontSize="small" />
+            </ListItemIcon>
+            Pay All :Student
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleMenuClick}>
+            <ListItemIcon>
+              <PrintIcon fontSize="small" />
+            </ListItemIcon>
+            Print Voucher
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleMenuClick}>
+            <ListItemIcon>
+              <Edit fontSize="small" />
+            </ListItemIcon>
+            Edit
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleMenuClick}>
+            <ListItemIcon>
+              <Delete fontSize="small" />
+            </ListItemIcon>
+            Delete
+          </MenuItem>
+        </Menu>
       </LSPage>
     </PageContainer>
   );
