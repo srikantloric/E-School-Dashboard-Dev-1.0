@@ -4,7 +4,15 @@ import LSPage from "../../components/Utils/LSPage";
 import PropTypes from "prop-types";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import GrainIcon from "@mui/icons-material/Grain";
-import { Breadcrumbs, Typography, Button, Tabs, Tab, Box, createFilterOptions } from "@mui/material";
+import {
+  Breadcrumbs,
+  Typography,
+  Button,
+  Tabs,
+  Tab,
+  Box,
+  createFilterOptions,
+} from "@mui/material";
 import PageContainer from "../../components/Utils/PageContainer";
 import Input from "@mui/joy/Input";
 import Footer from "../../components/Footer/Footer";
@@ -17,6 +25,7 @@ import {
 } from "@mui/joy";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchstudent } from "../../store/studentSlice";
+import { enqueueSnackbar } from "notistack";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,7 +69,7 @@ function FeeManager() {
   const data = Array.from(useSelector((state) => state.student.studentarray));
 
   const [searchList, setSearchList] = useState([]);
-  const [selectedDoc,setSelectedDoc] = useState(null)
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -76,11 +85,11 @@ function FeeManager() {
           admission: item.admission_no,
           profile: item.profil_url,
           sId: item.student_id,
-          dob:item.dob,
+          dob: item.dob,
         };
         filteredDatadata.push(obj);
       });
-      setSearchList(filteredDatadata)
+      setSearchList(filteredDatadata);
     }
   }, []);
 
@@ -91,10 +100,20 @@ function FeeManager() {
     console.log(data);
   }, []);
 
+  const filterOptions = createFilterOptions({
+    stringify: (option) => option.name + option.sId + option.admission,
+  });
 
-const filterOptions = createFilterOptions({
-  stringify: option => option.name + option.sId + option.admission
-});
+  const handleNextPageBtn = () => {
+    if (selectedDoc) {
+      historyRef(`${"FeeDetails/" + selectedDoc}`, {
+        state: data.filter((data) => data.id == selectedDoc),
+      });
+    } else {
+      // alert("select student")
+      enqueueSnackbar("Error : Please enter student id or admission number !");
+    }
+  };
 
   return (
     <PageContainer>
@@ -163,7 +182,9 @@ const filterOptions = createFilterOptions({
               <Autocomplete
                 id="country-select-demo"
                 color="primary"
-                onChange={(e,val) => {setSelectedDoc(val.id)}}
+                onChange={(e, val) => {
+                  setSelectedDoc(val.id);
+                }}
                 placeholder="Search with Student ID/Admission No"
                 // slotProps={{
                 //   input: {
@@ -173,7 +194,9 @@ const filterOptions = createFilterOptions({
                 sx={{ width: "450px", m: "10px" }}
                 options={searchList}
                 autoHighlight
-                getOptionLabel={(option) => `${option.name +" - "+ option.id}`}
+                getOptionLabel={(option) =>
+                  `${option.name + " - " + option.id}`
+                }
                 filterOptions={filterOptions}
                 renderOption={(props, option) => (
                   <AutocompleteOption {...props}>
@@ -188,7 +211,7 @@ const filterOptions = createFilterOptions({
                     <ListItemContent sx={{ fontSize: "sm" }}>
                       <b>{option.name}</b>
                       <Typography level="body-xs">
-                      OPS{option.admission} | {option.dob}
+                        OPS{option.admission} | {option.dob}
                       </Typography>
                     </ListItemContent>
                   </AutocompleteOption>
@@ -199,9 +222,7 @@ const filterOptions = createFilterOptions({
                 variant="contained"
                 sx={{ height: "36px" }}
                 disableElevation
-                onClick={() => {
-                  historyRef(`${'FeeDetails/'+selectedDoc}`);
-                }}
+                onClick={handleNextPageBtn}
               >
                 Search
               </Button>

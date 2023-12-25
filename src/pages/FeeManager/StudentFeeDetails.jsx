@@ -1,11 +1,12 @@
 import MaterialTable from "@material-table/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageContainer from "../../components/Utils/PageContainer";
 import LSPage from "../../components/Utils/LSPage";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import GrainIcon from "@mui/icons-material/Grain";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
 import PrintIcon from "@mui/icons-material/Print";
 import {
   Box,
@@ -23,43 +24,102 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { Delete, Edit, MoreVert } from "@mui/icons-material";
 import PaymentIcon from "@mui/icons-material/Payment";
-import { Link, useNavigate } from "react-router-dom";
-
-
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { db } from "../../firebase";
+import { enqueueSnackbar } from "notistack";
 
 //main element
 function StudentFeeDetails() {
   const [selectedRow, setSelectedRow] = useState(null);
-  const historyRef = useNavigate()
+  const [feeDetails, setFeeDetails] = useState([]);
+
+  const historyRef = useNavigate();
+  const location = useLocation();
 
   ///Sof Menu State
-  const [anchorEl, setAnchorEl] = useState(null);
-  const menuOpen = Boolean(anchorEl);
+  const [anchorEll, setAnchorEll] = useState(null);
+  const menuOpen = Boolean(anchorEll);
   const handleMenuClick = (event, rowData) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedRow(rowData);
+    console.log(event.currentTarget);
+    setAnchorEll(event.currentTarget);
+    // setSelectedRow(rowData);
   };
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setAnchorEll(null);
   };
   //Eof Menu State
 
-  const DEMO_DATA = [
-    { id: 2, name: "Joe" },
-    { id: 1, name: "Mary" },
-  ];
+  // const DEMO_DATA = [
+  //   { id: 2, name: "Joe" },
+  //   { id: 1, name: "Mary" },
+  // ];
   const DEMO_COLS = [
-    { field: "id", title: "Id" },
-    { field: "name", title: "Student" },
-    { field: "name", title: "Parent" },
-    { field: "name", title: "Fee Title" },
-    { field: "name", title: "Total" },
-    { field: "name", title: "Dis." },
-    { field: "name", title: "Late Fee" },
-    { field: "name", title: "Paid" },
-    { field: "name", title: "Due" },
-    { field: "name", title: "Status" },
+    { field: "payment_id", title: "Payment ID" },
+    // { field: "name", title: "Student" },
+    // { field: "name", title: "Parent" },
+    { field: "fee_title", title: "Fee Title" },
+    { field: "fee_total", title: "Total" },
+    { field: "discount_amount", title: "Disc." },
+    { field: "late_fee", title: "Late Fee" },
+    { field: "paid_amount", title: "Paid" },
+    { field: "due_amount", title: "Due" },
+    {
+      field: "payment_status",
+      title: "Status",
+      render: (rowData) => {
+        const styles = {
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          cursor: "pointer",
+          objectFit: "cover",
+        };
+        return (
+          <p
+            style={{
+              color: "var(--bs-white)",
+              backgroundColor: `${
+                rowData.payment_status === "paid"
+                  ? "var(--bs-success)"
+                  : "var(--bs-danger2)"
+              }`,
+              textAlign: "center",
+              textTransform: "capitalize",
+            }}
+          >
+            {rowData.payment_status}
+          </p>
+        );
+      },
+    },
   ];
+
+  useEffect(() => {
+    const userDocId = location.state[0].id;
+    console.log(location.state[0]);
+    if (userDocId) {
+      db.collection("STUDENTS")
+        .doc(userDocId)
+        .collection("PAYMENTS")
+        .get()
+        .then((documetSnap) => {
+          if (documetSnap.size) {
+            var feeArr = [];
+            documetSnap.forEach((doc) => {
+              console.log(doc.data());
+              feeArr.push(doc.data());
+            });
+          }
+          setFeeDetails(feeArr);
+        })
+        .catch((e) => {
+          enqueueSnackbar(e.message);
+        });
+    } else {
+      enqueueSnackbar("User document not found !");
+    }
+  }, []);
+
   return (
     <PageContainer>
       <LSPage>
@@ -94,15 +154,15 @@ function StudentFeeDetails() {
               <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
               Fee Details
             </Typography>
-            <Typography>
-              OPS214554444
-            </Typography>
+            <Typography>OPS214554444</Typography>
           </Breadcrumbs>
           <Button
             startIcon={<ControlPointIcon />}
             variant="contained"
             disableElevation
-            onClick={()=>{historyRef("/FeeManagement")}}
+            onClick={() => {
+              historyRef("/FeeManagement");
+            }}
           >
             Search Another
           </Button>
@@ -118,14 +178,16 @@ function StudentFeeDetails() {
           }}
         >
           <ArrowCircleRightIcon sx={{ mr: "5px" }} />
-          <Typography sx={{fontSize:"18px"}}>Student Fee Management</Typography>
+          <Typography sx={{ fontSize: "18px" }}>
+            Student Fee Management
+          </Typography>
         </Paper>
         <br />
         <Paper>
           <MaterialTable
             style={{ boxShadow: "none", display: "grid" }}
             columns={DEMO_COLS}
-            data={DEMO_DATA}
+            data={feeDetails}
             title="Fee Details"
             options={{
               headerStyle: {
@@ -148,9 +210,15 @@ function StudentFeeDetails() {
             }}
             actions={[
               {
+                icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
+                tooltip: "Edit Row",
+                onClick: (event, rowData) => {
+                  // updatestudent(rowData);
+                },
+              },
+              {
                 icon: () => (
                   <MoreVert
-                    
                     aria-controls={menuOpen ? "account-menu" : undefined}
                     aria-haspopup="true"
                     aria-expanded={menuOpen ? "true" : undefined}
@@ -158,14 +226,14 @@ function StudentFeeDetails() {
                 ),
                 tooltip: "More options",
                 onClick: (event, rowData) => {
-                  console.log(rowData);
+                  
                   handleMenuClick(event, rowData);
                 },
               },
             ]}
           />{" "}
           <Menu
-            anchorEl={anchorEl}
+            anchorEl={anchorEll}
             id="account-menu"
             open={menuOpen}
             onClose={handleMenuClose}
