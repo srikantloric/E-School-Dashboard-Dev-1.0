@@ -8,6 +8,7 @@ import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import PrintIcon from "@mui/icons-material/Print";
+import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import {
   Box,
   Breadcrumbs,
@@ -19,15 +20,15 @@ import {
   Menu,
   MenuItem,
   Paper,
-  Typography,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import { Delete, Edit, MoreVert } from "@mui/icons-material";
+import { Code, Delete, Edit, MoreVert } from "@mui/icons-material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { db } from "../../firebase";
 import { enqueueSnackbar } from "notistack";
+import { Input, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 
 //main element
 function StudentFeeDetails() {
@@ -41,6 +42,7 @@ function StudentFeeDetails() {
   ///Sof Menu State
   const [anchorEll, setAnchorEll] = useState(null);
   const menuOpen = Boolean(anchorEll);
+  const [modelOpen, setModelOpen] = useState(false);
   const handleMenuClick = (event, rowData) => {
     setAnchorEll(event.currentTarget);
     setSelectedRow(rowData);
@@ -113,7 +115,7 @@ function StudentFeeDetails() {
               feeArr.push(doc.data());
             });
           }
-          enqueueSnackbar("fetched successfully..", { variant:"success"});
+          // enqueueSnackbar("fetched successfully..", { variant: "success" });
           setFeeDetails(feeArr);
           setLoading(false);
         })
@@ -123,7 +125,7 @@ function StudentFeeDetails() {
         });
     } else {
       setLoading(false);
-      enqueueSnackbar("User document not found !", { variant:"error"});
+      enqueueSnackbar("User document not found !", { variant: "error" });
     }
   }, []);
 
@@ -185,65 +187,144 @@ function StudentFeeDetails() {
           }}
         >
           <ArrowCircleRightIcon sx={{ mr: "5px" }} />
-          <Typography sx={{ fontSize: "18px" }}>
+          <Typography sx={{ fontSize: "18px", color: "#fff" }}>
             Student Fee Management
           </Typography>
         </Paper>
         <br />
-        {loading ? <LinearProgress /> : null}
-        <br />
-        {feeDetails ? (
-          <MaterialTable
-            style={{ display: "grid" }}
-            columns={DEMO_COLS}
-            data={feeDetails}
-            title="Fee Details"
-            options={{
-              headerStyle: {
-                backgroundColor: "var(--bs-secondary)",
-                color: "#FFF",
-              },
-              exportAllData: true,
-              exportMenu: [
-                {
-                  label: "Export PDF",
-                  exportFunc: (cols, datas) =>
-                    ExportPdf(cols, datas, "myPdfFileName"),
-                },
-                {
-                  label: "Export CSV",
-                  exportFunc: (cols, datas) =>
-                    ExportCsv(cols, datas, "myCsvFileName"),
-                },
-              ],
-              actionsColumnIndex: -1,
+        <Paper sx={{ backgroundColor: "#FBFCFE", display: "flex" }}>
+          <div style={{ margin: "10px" }}>
+            <img
+              src={location.state[0].profil_url}
+              width={90}
+              height="100%"
+              style={{ objectFit: "cover" }}
+            ></img>
+          </div>
+          <div
+            style={{
+              margin: "10px 10px 10px 0px",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
             }}
-            actions={[
+          >
+            <div>
+              <h4 style={{ margin: 0, padding: 0, textTransform: "uppercase" }}>
+                {location.state[0].student_name}
+              </h4>
+              <p
+                style={{
+                  margin: "10px 0px 0px 0px",
+                  padding: 0,
+                  fontSize: "14px",
+                }}
+              >
+                Father's Name : {location.state[0].father_name}
+              </p>
+            </div>
+            <div
+              style={{
+                backgroundColor: "#F0F4F8",
+                display: "flex",
+                gap: "20px",
+                marginTop: "10px",
+                padding: "10px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <p style={{ margin: 0, padding: 0 }}>Class</p>
+                <p style={{ margin: 0, padding: 0 }}>
+                  {location.state[0].class}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <p style={{ margin: 0, padding: 0 }}>Roll</p>
+                <p style={{ margin: 0, padding: 0 }}>
+                  {location.state[0].class_roll}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <p style={{ margin: 0, padding: 0 }}>Admission No</p>
+                <p style={{ margin: 0, padding: 0 }}>
+                  {location.state[0].admission_no}
+                </p>
+              </div>
+            </div>
+          </div>
+        </Paper>
+        <br />
+        {loading ? <LinearProgress /> : null}
+
+        <MaterialTable
+          style={{ display: "grid" }}
+          columns={DEMO_COLS}
+          data={feeDetails}
+          title="Fee Details"
+          options={{
+            headerStyle: {
+              backgroundColor: "var(--bs-secondary)",
+              color: "#FFF",
+            },
+            exportAllData: true,
+            exportMenu: [
               {
-                icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
-                tooltip: "Edit Row",
-                onClick: (event, rowData) => {
-                  // updatestudent(rowData);
-                  handleMenuClick(event);
-                },
+                label: "Export PDF",
+                exportFunc: (cols, datas) =>
+                  ExportPdf(cols, datas, "myPdfFileName"),
               },
               {
-                icon: () => (
-                  <MoreVert
-                    aria-controls={menuOpen ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={menuOpen ? "true" : undefined}
-                  />
-                ),
-                tooltip: "More options",
-                onClick: (event, rowData) => {
-                  // console.log(rowData);
-                  handleMenuClick(event);
-                },
+                label: "Export CSV",
+                exportFunc: (cols, datas) =>
+                  ExportCsv(cols, datas, "myCsvFileName"),
               },
-            ]}
-          />
-        ) : null}
+            ],
+            actionsColumnIndex: -1,
+          }}
+          actions={[
+            {
+              icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
+              tooltip: "Edit Row",
+              onClick: (event, rowData) => {
+                // updatestudent(rowData);
+                handleMenuClick(event);
+              },
+            },
+            {
+              icon: () => (
+                <MoreVert
+                  aria-controls={menuOpen ? "account-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen ? "true" : undefined}
+                />
+              ),
+              tooltip: "More options",
+              onClick: (event, rowData) => {
+                // console.log(rowData);
+                handleMenuClick(event);
+              },
+            },
+          ]}
+        />
 
         <Menu
           anchorEl={anchorEll}
@@ -280,7 +361,7 @@ function StudentFeeDetails() {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem>
+          <MenuItem onClick={() => setModelOpen(true)}>
             <ListItemIcon>
               <PaymentIcon fontSize="small" />
             </ListItemIcon>
@@ -298,7 +379,7 @@ function StudentFeeDetails() {
             <ListItemIcon>
               <PrintIcon fontSize="small" />
             </ListItemIcon>
-            Print Voucher
+            Print Recipt
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleMenuClick}>
@@ -315,6 +396,72 @@ function StudentFeeDetails() {
             Delete
           </MenuItem>
         </Menu>
+
+        <Modal
+          aria-labelledby="modal-title"
+          aria-describedby="modal-desc"
+          open={modelOpen}
+          onClose={() => setModelOpen(false)}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Sheet
+            variant="outlined"
+            sx={{
+              width: 550,
+              minHeight: 600,
+              borderRadius: "md",
+              p: 3,
+              boxShadow: "lg",
+            }}
+          >
+            <ModalClose variant="plain" sx={{ m: 1 }} />
+            <div style={{ display: "flex" }}>
+              <ElectricBoltIcon />
+              <Typography level="title-lg" mb={1}>
+                Quick Payment
+              </Typography>
+            </div>
+            <Divider />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexDirection: "column",
+                height: 550,
+              }}
+            >
+              <div>fsfsd</div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography level="h3" sx={{ color: "var(--bs-danger)" }}>
+                  Rs.100{" "}
+                  <span style={{ fontSize: "16px", fontWeight: 400 }}>Due</span>
+                </Typography>
+
+                <div style={{ display: "flex" }}>
+                  <Input placeholder="enter amount" sx={{ ml: 3 }} />
+                  <Button
+                    variant="contained"
+                    disableElevation
+                    sx={{ ml: 2 }}
+                    color="success"
+                  >
+                    Pay Now
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Sheet>
+        </Modal>
       </LSPage>
     </PageContainer>
   );
