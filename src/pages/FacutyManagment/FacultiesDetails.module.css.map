@@ -1,1 +1,1 @@
-{"version":3,"sources":["FacultiesDetails.module.scss","FacultiesDetails.module.css"],"names":[],"mappings":"AAAA;EACI,aAAA;EACA,iBAAA;ACCJ;;ADEA;EACI,iCAAA;EACA,UAAA;ACCJ;;ADCA;EACI,OAAA;EACA,oCAAA;ACEJ","file":"FacultiesDetails.module.css"}
+{"version":3,"sources":["FacultiesDetails.module.scss","FacultiesDetails.module.css"],"names":[],"mappings":"AAAA;EACI,aAAA;EACA,iBAAA;ACCJ;;ADEA;EACI,iCAAA;EACA,UAAA;ACCJ;;ADCA;EACI,OAAA;EACA,oCAAA;ACEJ;;ADAA;EACI,wBAAA;EACA,YAAA;EACA,YAAA;ACGJ;;ADDE;EACE,wBAAA;ACIJ","file":"FacultiesDetails.module.css"}

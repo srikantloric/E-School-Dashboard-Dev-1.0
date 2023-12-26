@@ -23,7 +23,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { EditLocation } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 
@@ -84,7 +84,7 @@ const rows = [
 
 function FacultyDetail() {
   const [value, setValue] = React.useState(0);
-
+  const { id } = useParams();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -165,7 +165,34 @@ function FacultyDetail() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            Item One
+          <Paper sx={{ padding: "1rem" }}>
+                  <table className={Styles.table}>
+                    <tr>
+                      <td>Name:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Father Name:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>School Number:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Employ Id:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Birth Date:</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Cast:</td>
+                      <td></td>
+                    </tr>
+                  </table>
+                </Paper>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             Item Two
