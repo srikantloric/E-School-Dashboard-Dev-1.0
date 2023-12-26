@@ -12,7 +12,6 @@ import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import {
   Box,
   Breadcrumbs,
-  Button,
   Divider,
   IconButton,
   LinearProgress,
@@ -28,13 +27,30 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { db } from "../../firebase";
 import { enqueueSnackbar } from "notistack";
-import { Input, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
+import {
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  Modal,
+  ModalClose,
+  Option,
+  Select,
+  Sheet,
+  Switch,
+  Typography,
+} from "@mui/joy";
 
 //main element
 function StudentFeeDetails() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [feeDetails, setFeeDetails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [paymentDate, setPaymentDate] = useState(new Date());
+  const [paymentRemarks, setPaymentRemarks] = useState();
+  const [paymentMode, setPaymentMode] = useState();
+  const [paidAmount, setPaidAmount] = useState();
 
   const historyRef = useNavigate();
   const location = useLocation();
@@ -43,9 +59,12 @@ function StudentFeeDetails() {
   const [anchorEll, setAnchorEll] = useState(null);
   const menuOpen = Boolean(anchorEll);
   const [modelOpen, setModelOpen] = useState(false);
+  const [remarkError, setRemarkError] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const handleMenuClick = (event, rowData) => {
     setAnchorEll(event.currentTarget);
     setSelectedRow(rowData);
+    console.log(rowData);
   };
   const handleMenuClose = () => {
     setAnchorEll(null);
@@ -129,6 +148,21 @@ function StudentFeeDetails() {
     }
   }, []);
 
+  ////Modal
+
+  const handlePayBtn = () => {
+    setPaymentLoading(true);
+    console.log({
+      paymentDate: paymentDate,
+      remarks: paymentRemarks,
+      mode: paymentMode,
+      amount: paidAmount,
+    })
+    setPaymentLoading(false)
+  };
+
+  ////Modal
+
   return (
     <PageContainer>
       <LSPage>
@@ -167,8 +201,9 @@ function StudentFeeDetails() {
           </Breadcrumbs>
           <Button
             startIcon={<ControlPointIcon />}
-            variant="contained"
+            variant="solid"
             disableElevation
+            style={{ backgroundColor: "var(--bs-primary)" }}
             onClick={(e) => {
               historyRef("/FeeManagement");
             }}
@@ -320,7 +355,7 @@ function StudentFeeDetails() {
               tooltip: "More options",
               onClick: (event, rowData) => {
                 // console.log(rowData);
-                handleMenuClick(event);
+                handleMenuClick(event, rowData);
               },
             },
           ]}
@@ -397,71 +432,196 @@ function StudentFeeDetails() {
           </MenuItem>
         </Menu>
 
-        <Modal
-          aria-labelledby="modal-title"
-          aria-describedby="modal-desc"
-          open={modelOpen}
-          onClose={() => setModelOpen(false)}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Sheet
-            variant="outlined"
+        {selectedRow ? (
+          <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={modelOpen}
+            onClose={() => setModelOpen(false)}
             sx={{
-              width: 550,
-              minHeight: 600,
-              borderRadius: "md",
-              p: 3,
-              boxShadow: "lg",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <ModalClose variant="plain" sx={{ m: 1 }} />
-            <div style={{ display: "flex" }}>
-              <ElectricBoltIcon />
-              <Typography level="title-lg" mb={1}>
-                Quick Payment
-              </Typography>
-            </div>
-            <Divider />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                height: 550,
+            <Sheet
+              variant="outlined"
+              sx={{
+                width: 550,
+                minHeight: 600,
+                borderRadius: "md",
+                p: 3,
+                boxShadow: "lg",
               }}
             >
-              <div>fsfsd</div>
+              <ModalClose variant="plain" sx={{ m: 1 }} />
+              <div style={{ display: "flex" }}>
+                <ElectricBoltIcon />
+                <Typography level="title-lg" mb={1}>
+                  Quick Payment
+                </Typography>
+              </div>
+              <Divider />
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  flexDirection: "column",
+                  height: 550,
                 }}
               >
-                <Typography level="h3" sx={{ color: "var(--bs-danger)" }}>
-                  Rs.100{" "}
-                  <span style={{ fontSize: "16px", fontWeight: 400 }}>Due</span>
-                </Typography>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex" }}>
+                    <div>
+                      <Typography level="body-md" sx={{ mt: 1 }}>
+                        Payment ID :
+                      </Typography>
+                      <Typography level="body-md">Payment Title :</Typography>
+                      <Typography level="body-md">Payable Amount :</Typography>
+                      <Typography level="body-md">Late Fee:</Typography>
+                    </div>
+                    <div style={{ marginLeft: "20px" }}>
+                      <Typography
+                        level="body-md"
+                        sx={{ mt: 1, fontWeight: 700 }}
+                      >
+                        {selectedRow.id}
+                      </Typography>
+                      <Typography level="body-md">
+                        Payment for {selectedRow.fee_title}
+                      </Typography>
+                      <Typography level="body-md">
+                        Rs. {selectedRow.fee_total}
+                      </Typography>
+                      <Typography level="body-md">
+                        Rs. {selectedRow.late_fee}
+                      </Typography>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "30px" }}>
+                    <FormControl>
+                      <FormLabel>Remarks</FormLabel>
+                      <Input
+                        value={paymentRemarks}
+                        onChange={(e)=>{setPaymentRemarks(e.currentTarget.value)}}
+                        disabled={
+                          selectedRow.payment_status === "paid" ? true : false
+                        }
+                        placeholder="Please enter remark for payment"
+                      />
+                      <FormHelperText>{remarkError}</FormHelperText>
+                    </FormControl>
 
-                <div style={{ display: "flex" }}>
-                  <Input placeholder="enter amount" sx={{ ml: 3 }} />
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    sx={{ ml: 2 }}
-                    color="success"
-                  >
-                    Pay Now
-                  </Button>
+                    <FormControl sx={{ mt: 1 }}>
+                      <FormLabel required >Payment Date</FormLabel>
+                      <Input
+                        disabled={
+                          selectedRow.payment_status === "paid" ? true : false
+                        }
+                        type="date"
+                        
+                        value={paymentDate}
+                        required
+                        
+                        onChange={(e) => setPaymentDate(e.currentTarget.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ mt: 1 }}>
+                      <FormLabel required>Send SMS</FormLabel>
+                      <Select defaultValue="yes">
+                        <Option
+                          value="no"
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                        >
+                          No
+                        </Option>
+                        <Option
+                          value="yes"
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                        >
+                          Yes
+                        </Option>
+                      </Select>
+                    </FormControl>
+                    <FormControl sx={{ mt: 1 }}>
+                      <FormLabel required>Mode Of Payment</FormLabel>
+                      <Select defaultValue="cash" onChange={(e)=>{console.log(e.target.value)}}>
+                        <Option
+                          value="cash"
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                        >
+                          Cash
+                        </Option>
+                        <Option
+                          value="online"
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                        >
+                          Online
+                        </Option>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography level="h3" sx={{ color: "var(--bs-danger2)" }}>
+                    Rs. {selectedRow.due_amount}
+                    <span style={{ fontSize: "14px", fontWeight: 400,marginLeft:"4px" }}>
+                      Due
+                    </span>
+                  </Typography>
+
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Typography>Pay -</Typography>
+                    <Input
+                      disabled={
+                        selectedRow.payment_status === "paid" ? true : false
+                      }
+                      placeholder="enter amount"
+                      value={paidAmount}
+                      onChange={(e)=>{setPaidAmount(e.currentTarget.value)}}
+                      sx={{ ml: 1 }}
+                    />
+                    <Button
+                      variant="solid"
+                      disableElevation
+                      sx={{ ml: 2 }}
+                      color="success"
+                      loading={paymentLoading}
+                      onClick={handlePayBtn}
+                      disabled={
+                        selectedRow.payment_status === "paid" ? true : false
+                      }
+                    >
+                      Pay Now
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Sheet>
-        </Modal>
+              {selectedRow.payment_status === "paid" ? (
+                <img
+                  style={{ position: "absolute", top: 70, right: 50 }}
+                  height={100}
+                  src="https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/Dummy%20Images%2Fpaid2.png?alt=media&token=208e9ef0-2ad8-4016-beec-507b21af2221"
+                ></img>
+              ) : null}
+            </Sheet>
+          </Modal>
+        ) : null}
       </LSPage>
     </PageContainer>
   );
