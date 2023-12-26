@@ -14,6 +14,7 @@ import {
   Button,
   Divider,
   IconButton,
+  LinearProgress,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -32,6 +33,7 @@ import { enqueueSnackbar } from "notistack";
 function StudentFeeDetails() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [feeDetails, setFeeDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const historyRef = useNavigate();
   const location = useLocation();
@@ -93,6 +95,7 @@ function StudentFeeDetails() {
   ];
 
   useEffect(() => {
+    setLoading(true);
     const userDocId = location.state[0].id;
     console.log(location.state[0]);
     if (userDocId) {
@@ -110,14 +113,17 @@ function StudentFeeDetails() {
               feeArr.push(doc.data());
             });
           }
-          enqueueSnackbar("fetched successfully..");
+          enqueueSnackbar("fetched successfully..", { variant:"success"});
           setFeeDetails(feeArr);
+          setLoading(false);
         })
         .catch((e) => {
           enqueueSnackbar(e.message);
+          setLoading(false);
         });
     } else {
-      enqueueSnackbar("User document not found !");
+      setLoading(false);
+      enqueueSnackbar("User document not found !", { variant:"error"});
     }
   }, []);
 
@@ -184,7 +190,8 @@ function StudentFeeDetails() {
           </Typography>
         </Paper>
         <br />
-
+        {loading ? <LinearProgress /> : null}
+        <br />
         {feeDetails ? (
           <MaterialTable
             style={{ display: "grid" }}
@@ -196,7 +203,7 @@ function StudentFeeDetails() {
                 backgroundColor: "var(--bs-secondary)",
                 color: "#FFF",
               },
-              exportAllData:true,
+              exportAllData: true,
               exportMenu: [
                 {
                   label: "Export PDF",

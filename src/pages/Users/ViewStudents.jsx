@@ -144,7 +144,7 @@ function ViewStudents() {
 
   useEffect(() => {
     if (error) {
-      enqueueSnackbar("ERROR:" + error, "error");
+      enqueueSnackbar("ERROR:" + error,  { variant:"error"});
     }
   }, [error]);
   useEffect(() => {

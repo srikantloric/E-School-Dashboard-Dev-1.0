@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchstudent } from "../../store/studentSlice";
 import { enqueueSnackbar } from "notistack";
 
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -75,8 +76,10 @@ function FeeManager() {
     setValue(newValue);
   };
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    if (data) {
+    if (data.length != 0) {
       const filteredDatadata = [];
       data.forEach((item) => {
         const obj = {
@@ -91,13 +94,15 @@ function FeeManager() {
       });
       setSearchList(filteredDatadata);
     }
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     if (Array.from(data).length === 0) {
-      dispatch(fetchstudent());
+      setLoading(true);
+      dispatch(fetchstudent()).then(() => {
+        setLoading(false);
+      });
     }
-    console.log(data);
   }, []);
 
   const filterOptions = createFilterOptions({
@@ -111,7 +116,7 @@ function FeeManager() {
       });
     } else {
       // alert("select student")
-      enqueueSnackbar("Error : Please enter student id or admission number !");
+      enqueueSnackbar("Error : Please enter student id or admission number !", { variant:"error"});
     }
   };
 
@@ -126,6 +131,7 @@ function FeeManager() {
             borderRadius: "5px",
           }}
         >
+            
           <Breadcrumbs aria-label="breadcrumb">
             <a
               style={{
