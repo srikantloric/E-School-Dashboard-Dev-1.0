@@ -42,6 +42,7 @@ function UpdateStudent() {
       console.log(sigledata[0].profil_url);
     }
   }, []);
+  
 
   const handleImageChange = (e) => {
     setSelectedImage(e.target.files[0]);

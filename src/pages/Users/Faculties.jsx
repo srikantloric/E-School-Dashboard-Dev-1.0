@@ -14,19 +14,7 @@ function Faculties() {
         <LSPage>
           <div style={{ display: "flex",flexWrap:'wrap' }}>
             <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+           
           </div>
         </LSPage>
       </PageContainer>

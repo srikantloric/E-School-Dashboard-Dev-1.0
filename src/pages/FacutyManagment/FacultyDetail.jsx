@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
 import PropTypes from "prop-types";
@@ -26,6 +26,10 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { EditLocation } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+
+
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,8 +87,23 @@ const rows = [
 ];
 
 function FacultyDetail() {
-  const [value, setValue] = React.useState(0);
   const { id } = useParams();
+  const[teacherData,setteacherData]=useState();
+  const [value, setValue] = React.useState(0);
+  const data=useSelector((state)=>state.teacher.teacherArray);
+  useEffect(()=>{
+    if(id){
+      const sigledata =data.filter((ele) => ele.id === id);
+      console.log(sigledata);
+      setteacherData(sigledata[0]);
+      
+    }
+  },[])
+  console.log(teacherData)
+  console.log(data);
+  console.log(id)
+  
+ 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -130,7 +149,7 @@ function FacultyDetail() {
                 />
               </div>
               <div style={{ padding: "5px 15px" }}>
-                <h3>Rohan Mohit</h3>
+                <h3>{teacherData && teacherData.faculty_name}</h3>
 
                 <div style={{ marginTop: "1rem" }}>
                   <p style={{ padding: 3, margin: 0 }}>
