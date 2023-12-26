@@ -14,7 +14,9 @@ export const fetchteacher = createAsyncThunk(
         snap.forEach((doc) => {
           teachers.push({ ...doc.data(), id: doc.id });
         });
+        console.log(teachers)
         return teachers;
+        
       })
 
    }
@@ -33,7 +35,7 @@ const facultiesSlice = createSlice({
     },
     [fetchteacher.fulfilled]: (state, action) => {
       state.loading = false;
-      state.studentarray = action.payload;
+      state.teacherArray = action.payload;
 
     },
     [fetchteacher.rejected]: (state, action) => {
