@@ -44,13 +44,26 @@ import {
 
 //main element
 function StudentFeeDetails() {
+  function getCurrentDate() {
+    const dateObj = new Date();
+    const currDate =
+      dateObj.getFullYear() +
+      "-" +
+      (dateObj.getMonth() + 1) +
+      "-" +
+      dateObj.getDate();
+    return currDate;
+  }
+
   const [selectedRow, setSelectedRow] = useState(null);
   const [feeDetails, setFeeDetails] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [paymentDate, setPaymentDate] = useState(new Date());
-  const [paymentRemarks, setPaymentRemarks] = useState();
-  const [paymentMode, setPaymentMode] = useState();
+  const [paymentDate, setPaymentDate] = useState(getCurrentDate());
+  const [paymentRemarks, setPaymentRemarks] = useState("");
+  const [paymentMode, setPaymentMode] = useState("cash");
   const [paidAmount, setPaidAmount] = useState();
+  const [sendSms, setSendSMS] = useState(true);
+  const [paidAmountError, setPaidAmountError] = useState(false);
 
   const historyRef = useNavigate();
   const location = useLocation();
@@ -61,9 +74,11 @@ function StudentFeeDetails() {
   const [modelOpen, setModelOpen] = useState(false);
   const [remarkError, setRemarkError] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
+
   const handleMenuClick = (event, rowData) => {
     setAnchorEll(event.currentTarget);
     setSelectedRow(rowData);
+    setPaymentRemarks(selectedRow.payment_remarks);
     console.log(rowData);
   };
   const handleMenuClose = () => {
@@ -120,28 +135,26 @@ function StudentFeeDetails() {
     const userDocId = location.state[0].id;
     console.log(location.state[0]);
     if (userDocId) {
-      db.collection("STUDENTS")
+      const dbSubscription = db
+        .collection("STUDENTS")
         .doc(userDocId)
         .collection("PAYMENTS")
-        .get()
-        .then((documetSnap) => {
-          if (documetSnap.size) {
+        .onSnapshot((snapshot) => {
+          if (snapshot.size) {
             var feeArr = [];
-            documetSnap.forEach((doc) => {
+            snapshot.forEach((doc) => {
               const dataMod = {
                 id: doc.data().payement_id,
               };
               feeArr.push(doc.data());
             });
+            setFeeDetails(feeArr);
+            setLoading(false);
+          } else {
+            enqueueSnackbar("Something went wreong !", { variant: "error" });
           }
-          // enqueueSnackbar("fetched successfully..", { variant: "success" });
-          setFeeDetails(feeArr);
-          setLoading(false);
-        })
-        .catch((e) => {
-          enqueueSnackbar(e.message);
-          setLoading(false);
         });
+      return () => dbSubscription();
     } else {
       setLoading(false);
       enqueueSnackbar("User document not found !", { variant: "error" });
@@ -152,13 +165,48 @@ function StudentFeeDetails() {
 
   const handlePayBtn = () => {
     setPaymentLoading(true);
-    console.log({
-      paymentDate: paymentDate,
-      remarks: paymentRemarks,
-      mode: paymentMode,
-      amount: paidAmount,
-    })
-    setPaymentLoading(false)
+    setPaidAmountError(false);
+    if (paidAmount) {
+      const paymentData = {
+        payment_date: new Date(paymentDate),
+        payment_remarks: paymentRemarks,
+        payment_mode: paymentMode,
+        paid_amount: parseInt(selectedRow.paid_amount) + parseInt(paidAmount),
+        due_amount: selectedRow.due_amount - paidAmount,
+        payment_status: "paid",
+      };
+      // console.log("sss",selectedRow, location.state[0].id);
+      console.log(new Date(paymentDate));
+      if (location.state[0].id && selectedRow.doc_id) {
+        console.log("called");
+        db.collection("STUDENTS")
+          .doc(location.state[0].id)
+          .collection("PAYMENTS")
+          .doc(selectedRow.doc_id)
+          .update(paymentData)
+          .then((data) => {
+            setPaymentLoading(false);
+
+            const dueAmountI = selectedRow.due_amount - paidAmount;
+            selectedRow.due_amount = dueAmountI;
+
+            if (dueAmountI === 0) {
+              setSelectedRow((prevState) => ({
+                ...prevState,
+                ["payment_status"]: "paid",
+              }));
+            } else {
+              setSelectedRow((prevState) => ({
+                ...prevState,
+                ["payment_status"]: "partially paid",
+              }));
+            }
+          });
+      }
+    } else {
+      setPaidAmountError(true);
+      setPaymentLoading(false);
+    }
   };
 
   ////Modal
@@ -503,7 +551,9 @@ function StudentFeeDetails() {
                       <FormLabel>Remarks</FormLabel>
                       <Input
                         value={paymentRemarks}
-                        onChange={(e)=>{setPaymentRemarks(e.currentTarget.value)}}
+                        onChange={(e) => {
+                          setPaymentRemarks(e.currentTarget.value);
+                        }}
                         disabled={
                           selectedRow.payment_status === "paid" ? true : false
                         }
@@ -513,16 +563,14 @@ function StudentFeeDetails() {
                     </FormControl>
 
                     <FormControl sx={{ mt: 1 }}>
-                      <FormLabel required >Payment Date</FormLabel>
+                      <FormLabel required>Payment Date</FormLabel>
                       <Input
                         disabled={
                           selectedRow.payment_status === "paid" ? true : false
                         }
                         type="date"
-                        
                         value={paymentDate}
                         required
-                        
                         onChange={(e) => setPaymentDate(e.currentTarget.value)}
                       />
                     </FormControl>
@@ -549,7 +597,12 @@ function StudentFeeDetails() {
                     </FormControl>
                     <FormControl sx={{ mt: 1 }}>
                       <FormLabel required>Mode Of Payment</FormLabel>
-                      <Select defaultValue="cash" onChange={(e)=>{console.log(e.target.value)}}>
+                      <Select
+                        defaultValue="cash"
+                        onChange={(e, newVal) => {
+                          setPaymentMode(newVal);
+                        }}
+                      >
                         <Option
                           value="cash"
                           disabled={
@@ -580,35 +633,53 @@ function StudentFeeDetails() {
                 >
                   <Typography level="h3" sx={{ color: "var(--bs-danger2)" }}>
                     Rs. {selectedRow.due_amount}
-                    <span style={{ fontSize: "14px", fontWeight: 400,marginLeft:"4px" }}>
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        marginLeft: "4px",
+                      }}
+                    >
                       Due
                     </span>
                   </Typography>
 
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Typography>Pay -</Typography>
-                    <Input
-                      disabled={
-                        selectedRow.payment_status === "paid" ? true : false
-                      }
-                      placeholder="enter amount"
-                      value={paidAmount}
-                      onChange={(e)=>{setPaidAmount(e.currentTarget.value)}}
-                      sx={{ ml: 1 }}
-                    />
-                    <Button
-                      variant="solid"
-                      disableElevation
-                      sx={{ ml: 2 }}
-                      color="success"
-                      loading={paymentLoading}
-                      onClick={handlePayBtn}
-                      disabled={
-                        selectedRow.payment_status === "paid" ? true : false
-                      }
-                    >
-                      Pay Now
-                    </Button>
+                    {selectedRow.payment_status === "paid" ? (
+                      <Button startDecorator={<PrintIcon />}>
+                        Print Recipt
+                      </Button>
+                    ) : (
+                      <>
+                        <Typography>Pay -</Typography>
+                        <Input
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                          placeholder="enter amount"
+                          value={paidAmount}
+                          error={paidAmountError}
+                          onChange={(e) => {
+                            setPaidAmount(e.currentTarget.value);
+                          }}
+                          sx={{ ml: 1 }}
+                        />
+
+                        <Button
+                          variant="solid"
+                          disableElevation
+                          sx={{ ml: 2 }}
+                          color="success"
+                          loading={paymentLoading}
+                          onClick={handlePayBtn}
+                          disabled={
+                            selectedRow.payment_status === "paid" ? true : false
+                          }
+                        >
+                          Pay Now
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
