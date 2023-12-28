@@ -58,8 +58,10 @@
 .logo {
   height: 100px;
   width: 100px;
+  padding: 10px;
+  margin: 10px;
   border-radius: 50%;
-  border: 1px solid var(--bs-orange);
+  border: 2px solid var(--bs-orange);
   object-fit: cover;
 }
 .login-card {
@@ -72,6 +74,8 @@
   h2 {
     margin: 0;
     padding: 0;
+    // border-bottom: 1px solid gray;
+    // font-family: '';
   }
   p {
     color: var(--bs-secondary);

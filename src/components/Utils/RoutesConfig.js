@@ -5,6 +5,7 @@ import Attendance from "../../pages/Attendance/Attendance";
 import { IconCoinRupee, IconDashboard, IconFingerprint, IconFriends, IconMail, IconNotes, IconPoint, IconReceipt2, IconUsers } from "@tabler/icons-react";
 import AddStudent from "../../pages/Users/AddStudent";
 import UnderConstruction from "../../pages/Extras/UnderConstruction";
+import FeeManager from "../../pages/FeeManager/FeeManager";
 export const routesConfig =
     [
         {
@@ -26,7 +27,7 @@ export const routesConfig =
             icon: IconFriends,
             isCollapsable: false,
             isHeader: false,
-            Component: Students,
+            Component: AddStudent,
             childrens: [{
                 title: "Add Student",
                 to: "/add-students",
@@ -56,7 +57,16 @@ export const routesConfig =
             isHeader: true
         },
         {
-            title: "Attendance",
+            title: "Fee Management",
+            to: "/FeeManagement",
+            icon: IconCoinRupee,
+            isCollapsable: false,
+            isHeader: false,
+            Component: FeeManager,
+            
+        },
+        {
+            title: "Attendance ",
             to: "/Attendance",
             icon: IconFingerprint,
             isCollapsable: false,
@@ -64,15 +74,7 @@ export const routesConfig =
             Component: UnderConstruction,
           
         },
-        {
-            title: "Fee Payment",
-            to: "/FeeManagement",
-            icon: IconCoinRupee,
-            isCollapsable: false,
-            isHeader: false,
-            Component: UnderConstruction,
-            
-        },
+     
         {
             title: "Fee Receipt",
             to: "/FeeReceipt",

@@ -6,6 +6,7 @@ import {
   Breadcrumbs,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -24,15 +25,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { addstudent } from "../../store/studentSlice";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import GrainIcon from "@mui/icons-material/Grain";
-import { SnackbarProvider, useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 
 function AddStudent() {
   const printRef = useRef();
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.student);
-  console.log(error);
 
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -70,12 +70,20 @@ function AddStudent() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // console.log(selectedImage);
-    try {
-      const res = dispatch(
-        addstudent({ studentData: formData, studentProfile: selectedImage })
-      );
-      enqueueSnackbar("user registered sucessfully","sucess");
-    } catch (error) {}
+    setLoading(true)
+    dispatch(
+      addstudent({ studentData: formData, studentProfile: selectedImage })
+    )
+      .unwrap()
+      .then((d) => {
+        enqueueSnackbar("Successfully Registered", "success");
+        setLoading(false)
+      })
+      .catch((e) => {
+        console.log({ "dispatch error": e });
+        enqueueSnackbar(e, "error");
+        setLoading(false)
+      });
   };
 
   return (
@@ -307,7 +315,7 @@ function AddStudent() {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      Cast: e.target.value,
+                      cast: e.target.value,
                     }))
                   }
                   variant="outlined"
@@ -562,7 +570,7 @@ function AddStudent() {
               />
             </FormGroup>
             <br />
-            <Grid md={12} sx={{ display: "flex", justifyContent: "end" }}>
+            <Grid sx={{ display: "flex", justifyContent: "end" }}>
               <Button
                 sx={{
                   height: "3em",
@@ -583,6 +591,7 @@ function AddStudent() {
                   marginLeft: "1rem",
                 }}
               >
+                {loading ? <CircularProgress /> : null}
                 <Button variant="contained" color="primary" type="submit">
                   Submit
                 </Button>

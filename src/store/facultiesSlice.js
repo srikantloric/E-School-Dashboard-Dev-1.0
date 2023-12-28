@@ -1,8 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { db } from "../firebase";
 
-export const fetchstudent = createAsyncThunk(
+
+//FETCH
+export const fetchteacher = createAsyncThunk(
   "teacher/fetchteacher",
-  async () => {}
+   () => {
+    return db
+    .collection("Faculty")
+    .get()
+    .then((snap) => {
+      const teachers = [];
+        snap.forEach((doc) => {
+          teachers.push({ ...doc.data(), id: doc.id });
+        });
+        console.log(teachers)
+        return teachers;
+        
+      })
+
+   }
 );
 
 const facultiesSlice = createSlice({
@@ -12,5 +29,19 @@ const facultiesSlice = createSlice({
     loading: false,
     error: null,
   },
+  extraReducers:{
+    [fetchteacher.pending]: (state) => {
+      state.loading = true;
+    },
+    [fetchteacher.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.teacherArray = action.payload;
+
+    },
+    [fetchteacher.rejected]: (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    },
+  }
 });
 export default facultiesSlice.reducer;

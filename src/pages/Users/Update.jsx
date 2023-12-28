@@ -31,34 +31,29 @@ function UpdateStudent() {
   const [updatedata, setupdata] = useState();
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
-  const[profileImage,setProfileimage]=useState("")      
+  const [profileImage, setProfileimage] = useState("");
   const users = useSelector((state) => state.student.studentarray);
- 
 
   useEffect(() => {
     if (id) {
       const sigledata = users.filter((ele) => ele.id === id);
       setupdata(sigledata[0]);
       setProfileimage(sigledata[0].profil_url);
-      console.log(sigledata[0].profil_url)
+      console.log(sigledata[0].profil_url);
     }
   }, []);
-
   
-
 
   const handleImageChange = (e) => {
     setSelectedImage(e.target.files[0]);
   };
-  const updatastudentdata=(e)=>{
-   e.preventDefault();
-   dispatch(updatedatastudent({studentdata:updatedata,imageupdate:selectedImage}))
-
-  }
-  console.log(updatedata);
+  const updatastudentdata = (e) => {
+    e.preventDefault();
+    dispatch(
+      updatedatastudent({ studentdata: updatedata, imageupdate: selectedImage })
+    );
+  };
   
-
- 
 
   //   const [formData, setFormData] = useState({
   //     Name: "",
@@ -95,9 +90,9 @@ function UpdateStudent() {
     event.preventDefault();
     console.log(selectedImage);
   };
- const canclebutton =()=>{
-      window.history.back()            
- }
+  const canclebutton = () => {
+    window.history.back();
+  };
   return (
     <PageContainer>
       <Navbar />
@@ -123,11 +118,11 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Name"
-                  value={updatedata && updatedata.Name}
+                  value={updatedata && updatedata.student_name}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Name: e.target.value,
+                      student_name: e.target.value,
                     }))
                   }
                   variant="outlined"
@@ -164,16 +159,38 @@ function UpdateStudent() {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Section</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="SECTION"
+                    onChange={(e) =>
+                      setupdata((prev) => ({
+                        ...prev,
+                        section: e.target.value,
+                      }))
+                    }
+                    required
+                  >
+                    <MenuItem value={"A"}>SEC-A</MenuItem>
+                    <MenuItem value={"B"}>SEC-B</MenuItem>
+                    <MenuItem value={"C"}>SEC-C</MenuItem>
+                    <MenuItem value={"D"}>SEC-D</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <TextField
                   sx={{ width: "100%" }}
                   label="Class Roll No"
                   type="number"
                   variant="outlined"
-                  value={updatedata && updatedata.classRoll}
+                  value={updatedata && updatedata.class_roll}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      classRoll: e.target.value,
+                      class_roll: e.target.value,
                     }))
                   }
                   required
@@ -184,12 +201,12 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="DOB"
                   variant="outlined"
-                  value={updatedata && updatedata.dateOfBirth}
+                  value={updatedata && updatedata.dob}
                   focused="true"
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      dateOfBirth: e.target.value,
+                      dob: e.target.value,
                     }))
                   }
                   type="date"
@@ -202,11 +219,11 @@ function UpdateStudent() {
                   label="Admission Date"
                   variant="outlined"
                   focused="true"
-                  value={updatedata && updatedata.addmissiondate}
+                  value={updatedata && updatedata.date_of_addmission}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      addmissiondate: e.target.value,
+                      date_of_addmission: e.target.value,
                     }))
                   }
                   type="date"
@@ -239,11 +256,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Blood Group"
                   variant="outlined"
-                  value={updatedata && updatedata.Bloodgroup}
+                  value={updatedata && updatedata.blood_group}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Bloodgroup: e.target.value,
+                      blood_group: e.target.value,
                     }))
                   }
                   fullWidth
@@ -255,11 +272,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Religion"
                   variant="outlined"
-                  value={updatedata && updatedata.Religion}
+                  value={updatedata && updatedata.religion}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Religion: e.target.value,
+                      religion: e.target.value,
                     }))
                   }
                   type="text"
@@ -270,11 +287,11 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Cast"
-                  value={updatedata && updatedata.Cast}
+                  value={updatedata && updatedata.cast}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Cast: e.target.value,
+                      cast: e.target.value,
                     }))
                   }
                   variant="outlined"
@@ -292,11 +309,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Father's Name"
                   variant="outlined"
-                  value={updatedata && updatedata.Fathername}
+                  value={updatedata && updatedata.father_name}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Fathername: e.target.value,
+                      father_name: e.target.value,
                     }))
                   }
                   required
@@ -307,11 +324,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Occupation"
                   variant="outlined"
-                  value={updatedata && updatedata.fatheroccupation}
+                  value={updatedata && updatedata.father_occupation}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      fatheroccupation: e.target.value,
+                      father_occupation: e.target.value,
                     }))
                   }
                   required
@@ -322,11 +339,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Qualification"
                   variant="outlined"
-                  value={updatedata && updatedata.fatherQualification}
+                  value={updatedata && updatedata.father_qualification}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      fatherQualification: e.target.value,
+                      father_qualification: e.target.value,
                     }))
                   }
                   required
@@ -336,7 +353,7 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Mother's Name"
-                  value={updatedata && updatedata.Mothername}
+                  value={updatedata && updatedata.mother_name}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
@@ -351,11 +368,11 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Occupation"
-                  value={updatedata && updatedata.motheroccupation}
+                  value={updatedata && updatedata.mother_occupation}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      motheroccupation: e.target.value,
+                      mother_occupation: e.target.value,
                     }))
                   }
                   variant="outlined"
@@ -418,11 +435,11 @@ function UpdateStudent() {
                   sx={{ width: "100%" }}
                   label="Email"
                   variant="outlined"
-                  value={updatedata && updatedata.Email}
+                  value={updatedata && updatedata.email}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      Email: e.target.value,
+                      email: e.target.value,
                     }))
                   }
                   required
@@ -447,11 +464,11 @@ function UpdateStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="City"
-                  value={updatedata && updatedata.City}
+                  value={updatedata && updatedata.city}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      City: e.target.value,
+                      city: e.target.value,
                     }))
                   }
                   variant="outlined"
@@ -464,11 +481,11 @@ function UpdateStudent() {
                   label="State"
                   variant="outlined"
                   required
-                  value={updatedata && updatedata.State}
+                  value={updatedata && updatedata.state}
                   onChange={(e) =>
                     setupdata((prev) => ({
                       ...prev,
-                      State: e.target.value,
+                      state: e.target.value,
                     }))
                   }
                 />
@@ -491,7 +508,7 @@ function UpdateStudent() {
               {/* <IconButton color="primary" aria-label="upload picture" component="span">
       <PhotoCamera />
     </IconButton> */}
-            
+
               <Typography
                 variant="h6"
                 marginLeft="1rem"
@@ -509,11 +526,13 @@ function UpdateStudent() {
                 id="imageInput"
                 onChange={handleImageChange}
               />
-              {selectedImage ? <img
+              {selectedImage ? (
+                <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Selected Profile"
                   style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                />:  (
+                />
+              ) : (
                 <img
                   src={profileImage}
                   alt="Selected Profile"
@@ -583,10 +602,10 @@ function UpdateStudent() {
                 )}
               /> */}
               <Button
-                sx={{ height: "3em", marginLeft: "1rem",background:"Red" }}
+                sx={{ height: "3em", marginLeft: "1rem", background: "Red" }}
                 variant="contained"
                 disableElevation={true}
-                 onClick={canclebutton}
+                onClick={canclebutton}
               >
                 Cancle
               </Button>

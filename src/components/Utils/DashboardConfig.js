@@ -1,4 +1,4 @@
-import LogoImage from "../../assets/logoicon.png";
+import LogoImage from "../../assets/logotransparent.png";
 
 export const DashboardConfig = {
     title: "Loric Softwares",

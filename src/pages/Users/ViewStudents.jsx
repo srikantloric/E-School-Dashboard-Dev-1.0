@@ -5,13 +5,19 @@ import LSPage from "../../components/Utils/LSPage";
 import {
   Box,
   Breadcrumbs,
+  Button,
+  Chip,
   Divider,
   IconButton,
+  LinearProgress,
   ListItemIcon,
   Menu,
   Modal,
+  Tab,
+  Tabs,
   Typography,
 } from "@mui/material";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Styles from "./ViewStudents.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +28,7 @@ import GrainIcon from "@mui/icons-material/Grain";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import BlockIcon from "@mui/icons-material/Block";
+
 import {
   FormControl,
   InputLabel,
@@ -38,19 +45,62 @@ import MaterialTable from "@material-table/core";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { MoreVert } from "@mui/icons-material";
+import { IconEdit } from "@tabler/icons-react";
+import { useSnackbar } from "notistack";
+
+//tabs
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
+  const isDataLoading = useSelector((state) => state.student.loading);
+  const error = useSelector((state) => state.student.error);
+  // console.log(loading)
 
-  const loading = useSelector((state) => state.student);
+  const { enqueueSnackbar } = useSnackbar();
 
   const dipatch = useDispatch();
-  const [selection, setSelection] = useState();
-  const [dataByclass, setDatabyclass] = useState();
-  const [classes, setclass] = useState(1);
-  const [section, setSection] = useState();
+
+  const [filteredData, setFilteredData] = useState(Array.from(data));
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [filterChip, setFilterChip] = useState(false);
+  const [filterChipLabel, setFilterChipLabel] = useState();
+
   //topbar selection state
   const [session, setSession] = useState("2023/24");
+  const [selectedClass, setSelectedClass] = useState(-1);
+  const [selectedSection, setSelectedSection] = useState(-1);
 
   //model state
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,13 +108,19 @@ function ViewStudents() {
   const handleModalClose = () => setModalOpen(false);
 
   ///menu state
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
+    setSelectedRow(rowData);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   const style = {
@@ -72,34 +128,56 @@ function ViewStudents() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: "60%",
+    minHeight: "550px",
     bgcolor: "background.paper",
-    border: "2px solid #000",
+
     boxShadow: 24,
     p: 4,
   };
 
   useEffect(() => {
-    dipatch(fetchstudent());
-  }, [dipatch]);
+    if (Array.from(data).length === 0) {
+      dipatch(fetchstudent());
+    }
+  }, []);
 
   useEffect(() => {
-    setDatabyclass(data);
-  }, [loading]);
-
+    if (error) {
+      enqueueSnackbar("ERROR:" + error,  { variant:"error"});
+    }
+  }, [error]);
   useEffect(() => {
-    const filterData = data.filter((ele) => ele.class === classes.classes);
-    const sectionFilter = filterData.filter(
-      (ele) => ele.section === section.section
-    );
+    if (!isDataLoading) {
+      setFilteredData(data);
+    }
+  }, [isDataLoading]);
 
-    setDatabyclass(sectionFilter);
-    setDatabyclass(filterData);
-    console.log(data);
-    console.log(sectionFilter);
-    console.log(classes);
-  }, [classes, section]);
-  
+  const handleFilterButton = () => {
+    if (selectedClass !== -1 && selectedSection !== -1) {
+      let dataNew = data.filter((data) => {
+        return data.class === selectedClass && data.section === selectedSection;
+      });
+      setFilteredData(dataNew);
+      setFilterChipLabel(
+        "Filter set for class " +
+          selectedClass +
+          " and section " +
+          selectedSection
+      );
+      setFilterChip(true);
+    } else if (selectedSection === -1 && selectedClass !== -1) {
+      let dataNew = data.filter((data) => {
+        return data.class === selectedClass;
+      });
+      setFilteredData(dataNew);
+      setFilterChipLabel("Filter set for class " + selectedClass);
+      setFilterChip(true);
+    }
+
+    console.log(selectedClass, selectedSection);
+  };
+
   const deletestudent = (data) => {
     Swal.fire({
       title: "Are you sure?",
@@ -121,20 +199,26 @@ function ViewStudents() {
     navigate(`/update-student/${student.id}`);
   };
 
-  
   //column for material table
   const columnMat = [
-    { field: "student_id", title: "ID" },
+    {
+      field: "student_id", title: "ID", render: (rowData) => {
+        const id = ""+rowData.student_id;
+        
+        return <h5>{id.split("@")[0].toLocaleUpperCase()}</h5>
+        
+    }},
     {
       title: "Profile",
       field: "profil_url",
+      export: false,
       render: (rowData) => {
         const styles = {
           width: 40,
           height: 40,
           borderRadius: "50%",
           cursor: "pointer",
-          objectFit:"cover"
+          objectFit: "cover",
         };
         return <img src={rowData.profil_url} style={styles} />;
       },
@@ -155,8 +239,16 @@ function ViewStudents() {
     // { field: "Address", title: "Address" },
     // { field: "PostalCode", title: "Postalcode" },
   ];
+  const handleDelete = () => {
+    setFilterChip(!filterChip);
+    if (filterChip) {
+      setSelectedClass(-1);
+      setSelectedSection(-1);
+      setFilteredData(data);
+    }
+  };
 
-  if (loading === true) return <h1>loading</h1>;
+  // if (loading === true) return <h1>loading</h1>;/
   return (
     <PageContainer className={Styles.page}>
       <Navbar />
@@ -219,14 +311,10 @@ function ViewStudents() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="select class"
-                onChange={(e) =>
-                  setclass((prev) => ({
-                    ...prev,
-                    classes: e.target.value,
-                  }))
-                }
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
               >
-                <MenuItem value={1}>
+                <MenuItem value={-1}>
                   <em>Select</em>
                 </MenuItem>
                 <MenuItem value={1}>One</MenuItem>
@@ -247,14 +335,10 @@ function ViewStudents() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Class"
-                onChange={(e) =>
-                  setSection((prev) => ({
-                    ...prev,
-                    section: e.target.value,
-                  }))
-                }
+                value={selectedSection}
+                onChange={(e) => setSelectedSection(e.target.value)}
               >
-                <MenuItem value={1}>
+                <MenuItem value={-1}>
                   <em>Select</em>
                 </MenuItem>
                 <MenuItem value={"A"}>SEC-A</MenuItem>
@@ -263,16 +347,41 @@ function ViewStudents() {
                 <MenuItem value={"D"}>SEC-D</MenuItem>
               </Select>
             </FormControl>
-            <IconButton sx={{ ml: 2, mr: 2, background: "var(--bs-gray-300)" }}>
+            <IconButton
+              sx={{ ml: 2, mr: 2, background: "var(--bs-gray-300)" }}
+              onClick={handleFilterButton}
+            >
               <SearchIcon />
             </IconButton>
           </div>
         </Paper>
         <br />
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "end",
+            alignContent: "end",
+          }}
+        >
+          {filterChip ? (
+            <Chip
+              label={filterChipLabel}
+              variant="filled"
+              // onClick={handleClick}
+              onDelete={handleDelete}
+            />
+          ) : null}
+        </div>
+        <Box sx={{ width: "100%" }}>
+          {/* <LinearProgress /> */}
+          {isDataLoading ? <LinearProgress /> : null}
+        </Box>
+        <br></br>
         <MaterialTable
           style={{ display: "grid" }}
           columns={columnMat}
-          data={dataByclass}
+          data={filteredData}
           title="Students Data"
           options={{
             grouping: true,
@@ -296,7 +405,7 @@ function ViewStudents() {
           }}
           actions={[
             {
-              icon: () => <EditIcon sx={{color:"var(--bs-primary)"}}/>,
+              icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
               tooltip: "Edit Row",
               onClick: (event, rowData) => {
                 updatestudent(rowData);
@@ -322,7 +431,8 @@ function ViewStudents() {
               ),
               tooltip: "More options",
               onClick: (event, rowData) => {
-                handleMenuClick(event);
+                console.log(rowData);
+                handleMenuClick(event, rowData);
               },
             },
           ]}
@@ -382,26 +492,197 @@ function ViewStudents() {
             Suspend User
           </MenuItem>
         </Menu>
-        <Modal
-          keepMounted
-          open={modalOpen}
-          onClose={handleModalClose}
-          aria-labelledby="keep-mounted-modal-title"
-          aria-describedby="keep-mounted-modal-description"
-        >
-          <Box sx={style}>
-            <Typography
-              id="keep-mounted-modal-title"
-              variant="h6"
-              component="h2"
-            >
-              Text in a modal
-            </Typography>
-            <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-          </Box>
-        </Modal>
+        {selectedRow ? (
+          <Modal
+            keepMounted
+            open={modalOpen}
+            onClose={handleModalClose}
+            aria-labelledby="keep-mounted-modal-title"
+            aria-describedby="keep-mounted-modal-description"
+            sx={{ minHeight: "400px" }}
+          >
+            <Box sx={style}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div style={{ display: "flex" }}>
+                  <div style={{ marginTop: "10px" }}>
+                    <img
+                      src={selectedRow.profil_url}
+                      height={100}
+                      width={90}
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <div style={{ padding: "5px 15px" }}>
+                    <h3>{selectedRow.student_name}</h3>
+
+                    <div style={{ marginTop: "1rem" }}>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Date Of Birth:{selectedRow.dob}
+                      </p>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Date Of Admission : {selectedRow.date_of_addmission}
+                      </p>
+                      <p style={{ padding: 3, margin: 0 }}>
+                        Contact : +91-7979080633
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+              <Box sx={{ width: "100%" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                  >
+                    <Tab label="Basic Info" {...a11yProps(0)} />
+                    <Tab label="Parent Info" {...a11yProps(1)} />
+                    <Tab label="Exam Marks" {...a11yProps(2)} />
+                    <Tab label="Payment Details" {...a11yProps(3)} />
+                  </Tabs>
+                </Box>
+              </Box>
+              <CustomTabPanel value={value} index={0}>
+                <Paper sx={{ padding: "1rem" }}>
+                  <table className={Styles.table}>
+                    <tr>
+                      <td>Name:</td>
+                      <td>{selectedRow.student_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Class:</td>
+                      <td>{selectedRow.class}</td>
+                    </tr>
+                    <tr>
+                      <td>Roll No:</td>
+                      <td>{selectedRow.class_roll}</td>
+                    </tr>
+                    <tr>
+                      <td>Student Id:</td>
+                      <td>{selectedRow.student_id}</td>
+                    </tr>
+                    <tr>
+                      <td>Birth Date:</td>
+                      <td>{selectedRow.dob}</td>
+                    </tr>
+                    <tr>
+                      <td>Cast:</td>
+                      <td>{selectedRow.cast}</td>
+                    </tr>
+                  </table>
+                </Paper>
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                <Paper sx={{ padding: "10px" }}>
+                  <table className={Styles.table}>
+                    <tr>
+                      <td>Father Name:</td>
+                      <td>{selectedRow.father_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Father Occupation:</td>
+                      <td>{selectedRow.father_occupation}</td>
+                    </tr>
+                    <tr>
+                      <td>Father Qulifiation:</td>
+                      <td>{selectedRow.father_qualification}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Name:</td>
+                      <td>{selectedRow.mother_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Occupation:</td>
+                      <td>{selectedRow.mother_occupation}</td>
+                    </tr>
+                    <tr>
+                      <td>Mother Qulification:</td>
+                      <td>{selectedRow.motherqualifiation}</td>
+                    </tr>
+                    <tr>
+                      <td>Contact Number:</td>
+                      <td>{selectedRow.Contactnumber}</td>
+                    </tr>
+                  </table>
+                </Paper>
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2}>
+                Exam Mark
+              </CustomTabPanel>
+              <CustomTabPanel
+                className={Styles.paymentcontain}
+                value={value}
+                index={3}
+              >
+                <div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023 </p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div style={{ display: "flex",height:"50% "}}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                      </div>
+                      <p>Rs 500</p>
+                    </div>
+                    <div className={Styles.paymentDate}>
+                      <p>12/12/2023</p>
+                      <p> | TXN ID SBI00037</p>
+                    </div>
+                  </div>
+                 
+                </div>
+              </CustomTabPanel>
+            </Box>
+          </Modal>
+        ) : null}
         ;
       </LSPage>
     </PageContainer>
