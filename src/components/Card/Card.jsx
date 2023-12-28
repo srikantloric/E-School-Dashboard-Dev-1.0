@@ -28,7 +28,7 @@ console.log(data)
   <div className={Styles.cardBody}>
           <h3>{card.faculty_name}</h3>
           <h4>Subject:Hindi</h4>
-          <h4>DOJ:01/02/2023</h4>
+          <h4>{card.doj}</h4>
   </div>
       <div className={Styles.cardFooter}>
           <Button className={Styles.viewButton} variant="contained" disableElevation onClick={()=>{

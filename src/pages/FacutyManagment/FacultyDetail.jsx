@@ -8,6 +8,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import GrainIcon from "@mui/icons-material/Grain";
 import Styles from "./FacultiesDetails.module.scss";
+import { enqueueSnackbar } from "notistack";
 import {
   Box,
   Breadcrumbs,
@@ -28,6 +29,7 @@ import { EditLocation } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { db } from "../../firebase";
 
 
 
@@ -90,6 +92,8 @@ function FacultyDetail() {
   const { id } = useParams();
   const[teacherData,setteacherData]=useState();
   const [value, setValue] = React.useState(0);
+  const [feeDetails, setFeeDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
   const data=useSelector((state)=>state.teacher.teacherArray);
   useEffect(()=>{
     if(id){
@@ -107,6 +111,41 @@ function FacultyDetail() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  
+  useEffect(() => {
+    setLoading(true);
+    console.log(id);
+    const userDocId =id;
+    // console.log(location.state[0]);
+    if (userDocId) {
+      const dbSubscriptions = db
+        .collection("Faculty")
+        .doc(userDocId)
+        .collection("Payment")
+        .onSnapshot((snapshot) => {
+          if (snapshot.size) {
+            var paymentArr = [];
+            snapshot.forEach((doc) => {
+              const dataMod = {
+                id: doc.data().payment_id,
+              };
+              paymentArr.push(doc.data());
+            });
+            setFeeDetails(paymentArr);
+            
+            setLoading(false);
+          } else {
+            enqueueSnackbar("Something went wreong !", { variant: "error" });
+          }
+        });
+
+        console.log(feeDetails);
+      return () => dbSubscriptions();
+    } else {
+      setLoading(false);
+      enqueueSnackbar("User document not found !", { variant: "error" });
+    }
+  }, []);
 
   return (
     <>
@@ -153,13 +192,13 @@ function FacultyDetail() {
 
                 <div style={{ marginTop: "1rem" }}>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Birth:12/12/1975
+                  Date Of Birth :  {teacherData && teacherData.dob}
                   </p>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Joining : 01/01/2012
+                    Date Of Joining : {teacherData && teacherData.doj}
                   </p>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Contact : +91-7979080633
+                    Contact : +91-{teacherData && teacherData.faculty_phone_number}
                   </p>
                 </div>
               </div>
@@ -188,11 +227,11 @@ function FacultyDetail() {
                   <table className={Styles.table}>
                     <tr>
                       <td>Name:</td>
-                      <td></td>
+                      <td>{teacherData && teacherData.faculty_name}</td>
                     </tr>
                     <tr>
                       <td>Father Name:</td>
-                      <td></td>
+                      <td>{teacherData && teacherData.faculty_father_name}</td>
                     </tr>
                     <tr>
                       <td>School Number:</td>
@@ -200,21 +239,48 @@ function FacultyDetail() {
                     </tr>
                     <tr>
                       <td>Employ Id:</td>
-                      <td></td>
+                      <td>{teacherData && teacherData.faculty_id}</td>
                     </tr>
                     <tr>
                       <td>Birth Date:</td>
-                      <td></td>
+                      <td>{teacherData && teacherData.dob}</td>
                     </tr>
                     <tr>
                       <td>Cast:</td>
-                      <td></td>
+                      <td>{teacherData && teacherData.cast}</td>
                     </tr>
                   </table>
                 </Paper>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            Item Two
+          <Paper sx={{ padding: "1rem" }}>
+                  <table className={Styles.table}>
+                    <tr>
+                      <td>Degree:</td>
+                      <td>{teacherData && teacherData.faculty_degree}</td>
+                    </tr>
+                    <tr>
+                      <td>Specification Subject:</td>
+                      <td>{teacherData && teacherData.faculty_specification}</td>
+                    </tr>
+                    <tr>
+                      <td>Collage:</td>
+                      <td>{teacherData && teacherData.faculty_pastoutcollege}</td>
+                    </tr>
+                    <tr>
+                      <td>Previous Job:</td>
+                      <td>{teacherData && teacherData.faculty_id}</td>
+                    </tr>
+                    <tr>
+                      <td>:</td>
+                      <td>{teacherData && teacherData.dob}</td>
+                    </tr>
+                    <tr>
+                      <td>Cast:</td>
+                      <td>{teacherData && teacherData.cast}</td>
+                    </tr>
+                  </table>
+                </Paper>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
             <div className={Styles.address_container}>
