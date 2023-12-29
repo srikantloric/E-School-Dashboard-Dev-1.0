@@ -102,7 +102,7 @@ function FacultyDetail() {
   }, []);
   const paymentdetail = (paymentcard, index) => {
     return (
-      <div className={Styles.paymentbox}>
+      <div className={Styles.paymentbox} > 
         <div className={Styles.paymentboxchild}>
           <div className={Styles.paymentStatus}>
             <p>Successful</p>
@@ -110,13 +110,13 @@ function FacultyDetail() {
           </div>
 
           <div className={Styles.paymentDate}>
-            <p>12/12/2023</p>
+            <p>11/12/2023</p>
             <p> | TXN ID SBI00037</p>
           </div>
         </div>
         <div className={Styles.paymentBonus}>
-        <p>Bonus: 0</p>
-         <p>Credit by:kundan gupta</p>
+        <p>Bonus: {paymentcard.payment_bonus}</p>
+         <p>Credit by:{paymentcard.payment_by}</p>
         </div>
       </div>
     );
