@@ -27,7 +27,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchstudent } from "../../store/studentSlice";
 import { enqueueSnackbar } from "notistack";
 
-
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -116,7 +115,9 @@ function FeeManager() {
       });
     } else {
       // alert("select student")
-      enqueueSnackbar("Error : Please enter student id or admission number !", { variant:"error"});
+      enqueueSnackbar("Error : Please enter student id or admission number !", {
+        variant: "error",
+      });
     }
   };
 
@@ -131,7 +132,6 @@ function FeeManager() {
             borderRadius: "5px",
           }}
         >
-            
           <Breadcrumbs aria-label="breadcrumb">
             <a
               style={{
@@ -189,7 +189,7 @@ function FeeManager() {
                 id="country-select-demo"
                 color="primary"
                 onChange={(e, val) => {
-                  setSelectedDoc(val.id);
+                  setSelectedDoc(val && val.id);
                 }}
                 placeholder="Search with Student ID/Admission No"
                 // slotProps={{

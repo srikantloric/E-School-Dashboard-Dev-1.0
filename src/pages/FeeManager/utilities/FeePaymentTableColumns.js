@@ -8,7 +8,18 @@ export const FEE_TABLE_COLS = [
   { field: "discount_amount", title: "Disc." },
   { field: "late_fee", title: "Late Fee" },
   { field: "paid_amount", title: "Paid" },
-  { field: "due_amount", title: "Due" },
+  {
+    field: "due_amount",
+    title: "Due",
+    render: (rowData) => {
+      const dueAmount =
+        parseInt(rowData.fee_total) -
+        parseInt(rowData.paid_amount) +
+        parseInt(rowData.late_fee);
+      // console.log(dueAmount)
+      return <p>{dueAmount}</p>;
+    },
+  },
   {
     field: "payment_status",
     title: "Status",
@@ -20,22 +31,37 @@ export const FEE_TABLE_COLS = [
         cursor: "pointer",
         objectFit: "cover",
       };
-      return (
-        <p
-          style={{
-            color: "var(--bs-white)",
-            backgroundColor: `${
-              rowData.payment_status === "paid"
-                ? "var(--bs-success)"
-                : "var(--bs-danger2)"
-            }`,
-            textAlign: "center",
-            textTransform: "capitalize",
-          }}
-        >
-          {rowData.payment_status}
-        </p>
-      );
+      const dueAmount =
+        parseInt(rowData.fee_total) -
+        parseInt(rowData.paid_amount) +
+        parseInt(rowData.late_fee);
+      if (dueAmount === 0) {
+        return (
+          <p
+            style={{
+              color: "var(--bs-white)",
+              backgroundColor: "var(--bs-success)",
+              textAlign: "center",
+              textTransform: "capitalize",
+            }}
+          >
+            Paid
+          </p>
+        );
+      } else {
+        return (
+          <p
+            style={{
+              color: "var(--bs-white)",
+              backgroundColor: "var(--bs-danger2)",
+              textAlign: "center",
+              textTransform: "capitalize",
+            }}
+          >
+            Due
+          </p>
+        );
+      }
     },
   },
 ];

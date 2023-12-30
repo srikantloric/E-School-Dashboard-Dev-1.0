@@ -5,16 +5,54 @@ import PageContainer from "../../components/Utils/PageContainer";
 import Card from "../../components/Card/Card";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import PersonIcon from "@mui/icons-material/Person";
+import GrainIcon from "@mui/icons-material/Grain";
+import { Breadcrumbs, Paper, Typography } from "@mui/material";
 function Faculties() {
- 
   return (
     <>
       <PageContainer>
         <Navbar />
         <LSPage>
-          <div style={{ display: "flex",flexWrap:'wrap' }}>
+          <Paper
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              margin: "5px",
+            }}
+          >
+            <Breadcrumbs aria-label="breadcrumb">
+              <a
+                style={{
+                  textDecoration: "none",
+                  color: "#343a40",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                href="/"
+              >
+                <PersonIcon sx={{ color: "var(--bs-gray-500)" }} />
+                <Typography sx={{ ml: "4px" }}>Faculty Management</Typography>
+              </a>
+
+              <Typography
+                sx={{ display: "flex", alignItems: "center" }}
+                color="text.secondary"
+              >
+                <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
+                Faculties
+              </Typography>
+            </Breadcrumbs>
+          </Paper>
+          <br />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}
+          >
             <Card />
-           
           </div>
         </LSPage>
       </PageContainer>
