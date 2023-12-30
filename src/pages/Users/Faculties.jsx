@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import GrainIcon from "@mui/icons-material/Grain";
 import { Breadcrumbs, Paper, Typography } from "@mui/material";
+import { Button } from "@mui/joy";
+import { Download } from "@mui/icons-material";
 function Faculties() {
   return (
     <>
@@ -19,6 +21,9 @@ function Faculties() {
               padding: "10px",
               borderRadius: "5px",
               margin: "5px",
+              display: "flex",
+              alignItems:"center",
+              justifyContent: "space-between",
             }}
           >
             <Breadcrumbs aria-label="breadcrumb">
@@ -43,6 +48,7 @@ function Faculties() {
                 Faculties
               </Typography>
             </Breadcrumbs>
+            <Button variant="soft" startDecorator={<Download/>}>Export</Button>
           </Paper>
           <br />
           <div

@@ -9,6 +9,7 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import GrainIcon from "@mui/icons-material/Grain";
 import Styles from "./FacultiesDetails.module.scss";
 import PersonIcon from "@mui/icons-material/Person";
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { enqueueSnackbar } from "notistack";
 import {
   Box,
@@ -202,6 +203,7 @@ function FacultyDetail() {
                 {id}
               </Typography>
             </Breadcrumbs>
+          
           </Paper>
 
           <br></br>
