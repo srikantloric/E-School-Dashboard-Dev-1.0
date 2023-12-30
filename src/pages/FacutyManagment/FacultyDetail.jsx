@@ -8,6 +8,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import GrainIcon from "@mui/icons-material/Grain";
 import Styles from "./FacultiesDetails.module.scss";
+import { enqueueSnackbar } from "notistack";
 import {
   Box,
   Breadcrumbs,
@@ -28,8 +29,7 @@ import { EditLocation } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 import { useSelector } from "react-redux";
 import { useState } from "react";
-
-
+import { db } from "../../firebase";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -88,25 +88,78 @@ const rows = [
 
 function FacultyDetail() {
   const { id } = useParams();
-  const[teacherData,setteacherData]=useState();
+  const [teacherData, setteacherData] = useState();
   const [value, setValue] = React.useState(0);
-  const data=useSelector((state)=>state.teacher.teacherArray);
-  useEffect(()=>{
-    if(id){
-      const sigledata =data.filter((ele) => ele.id === id);
+  const [feeDetails, setFeeDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const data = useSelector((state) => state.teacher.teacherArray);
+  useEffect(() => {
+    if (id) {
+      const sigledata = data.filter((ele) => ele.id === id);
       console.log(sigledata);
       setteacherData(sigledata[0]);
-      
     }
-  },[])
-  console.log(teacherData)
-  console.log(data);
-  console.log(id)
-  
- 
+  }, []);
+  const paymentdetail = (paymentcard, index) => {
+    return (
+      <div className={Styles.paymentbox} > 
+        <div className={Styles.paymentboxchild}>
+          <div className={Styles.paymentStatus}>
+            <p>Successful</p>
+            <p>Rs {paymentcard.payment_amount}</p>
+          </div>
+
+          <div className={Styles.paymentDate}>
+            <p>11/12/2023</p>
+            <p> | TXN ID SBI00037</p>
+          </div>
+        </div>
+        <div className={Styles.paymentBonus}>
+        <p>Bonus: {paymentcard.payment_bonus}</p>
+         <p>Credit by:{paymentcard.payment_by}</p>
+        </div>
+      </div>
+    );
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    setLoading(true);
+    console.log(id);
+    const userDocId = id;
+    // console.log(location.state[0]);
+    if (userDocId) {
+      const dbSubscriptions = db
+        .collection("Faculty")
+        .doc(userDocId)
+        .collection("Payment")
+        .onSnapshot((snapshot) => {
+          if (snapshot.size) {
+            var paymentArr = [];
+            snapshot.forEach((doc) => {
+              const dataMod = {
+                id: doc.data().payment_id,
+              };
+              paymentArr.push(doc.data());
+            });
+            setFeeDetails(paymentArr);
+
+            setLoading(false);
+          } else {
+            enqueueSnackbar("Something went wreong !", { variant: "error" });
+          }
+        });
+
+      console.log(feeDetails);
+      return () => dbSubscriptions();
+    } else {
+      setLoading(false);
+      enqueueSnackbar("User document not found !", { variant: "error" });
+    }
+  }, []);
 
   return (
     <>
@@ -153,13 +206,14 @@ function FacultyDetail() {
 
                 <div style={{ marginTop: "1rem" }}>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Birth:12/12/1975
+                    Date Of Birth : {teacherData && teacherData.dob}
                   </p>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Joining : 01/01/2012
+                    Date Of Joining : {teacherData && teacherData.doj}
                   </p>
                   <p style={{ padding: 3, margin: 0 }}>
-                    Contact : +91-7979080633
+                    Contact : +91-
+                    {teacherData && teacherData.faculty_phone_number}
                   </p>
                 </div>
               </div>
@@ -184,37 +238,64 @@ function FacultyDetail() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-          <Paper sx={{ padding: "1rem" }}>
-                  <table className={Styles.table}>
-                    <tr>
-                      <td>Name:</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>Father Name:</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>School Number:</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>Employ Id:</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>Birth Date:</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td>Cast:</td>
-                      <td></td>
-                    </tr>
-                  </table>
-                </Paper>
+            <Paper sx={{ padding: "1rem" }}>
+              <table className={Styles.table}>
+                <tr>
+                  <td>Name:</td>
+                  <td>{teacherData && teacherData.faculty_name}</td>
+                </tr>
+                <tr>
+                  <td>Father Name:</td>
+                  <td>{teacherData && teacherData.faculty_father_name}</td>
+                </tr>
+                <tr>
+                  <td>School Number:</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Employ Id:</td>
+                  <td>{teacherData && teacherData.faculty_id}</td>
+                </tr>
+                <tr>
+                  <td>Birth Date:</td>
+                  <td>{teacherData && teacherData.dob}</td>
+                </tr>
+                <tr>
+                  <td>Cast:</td>
+                  <td>{teacherData && teacherData.cast}</td>
+                </tr>
+              </table>
+            </Paper>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            Item Two
+            <Paper sx={{ padding: "1rem" }}>
+              <table className={Styles.table}>
+                <tr>
+                  <td>Degree:</td>
+                  <td>{teacherData && teacherData.faculty_degree}</td>
+                </tr>
+                <tr>
+                  <td>Specification Subject:</td>
+                  <td>{teacherData && teacherData.faculty_specification}</td>
+                </tr>
+                <tr>
+                  <td>Collage:</td>
+                  <td>{teacherData && teacherData.faculty_pastoutcollege}</td>
+                </tr>
+                <tr>
+                  <td>Previous Job:</td>
+                  <td>{teacherData && teacherData.faculty_id}</td>
+                </tr>
+                <tr>
+                  <td>:</td>
+                  <td>{teacherData && teacherData.dob}</td>
+                </tr>
+                <tr>
+                  <td>Cast:</td>
+                  <td>{teacherData && teacherData.cast}</td>
+                </tr>
+              </table>
+            </Paper>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
             <div className={Styles.address_container}>
@@ -222,8 +303,12 @@ function FacultyDetail() {
               <div className={Styles.address_container_mainsection}></div>
             </div>
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={3}>
-            <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
+          <CustomTabPanel
+            className={Styles.paymentcontain}
+            value={value}
+            index={3}
+          >
+            {/* <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
@@ -251,7 +336,8 @@ function FacultyDetail() {
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>
+            </TableContainer> */}
+            {feeDetails.map(paymentdetail)}
           </CustomTabPanel>
         </LSPage>
       </PageContainer>

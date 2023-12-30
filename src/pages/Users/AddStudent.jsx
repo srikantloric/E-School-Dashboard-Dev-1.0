@@ -33,6 +33,7 @@ function AddStudent() {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const formRef = useRef();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -70,19 +71,21 @@ function AddStudent() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // console.log(selectedImage);
-    setLoading(true)
+    setLoading(true);
     dispatch(
       addstudent({ studentData: formData, studentProfile: selectedImage })
     )
       .unwrap()
       .then((d) => {
-        enqueueSnackbar("Successfully Registered", "success");
-        setLoading(false)
+        enqueueSnackbar("Successfully Registered", { variant: "success" });
+        setLoading(false);
+        setSelectedImage(null);
+        formRef.current.reset()
       })
       .catch((e) => {
         console.log({ "dispatch error": e });
-        enqueueSnackbar(e, "error");
-        setLoading(false)
+        enqueueSnackbar(e, { variant: "error" });
+        setLoading(false);
       });
   };
 
@@ -126,7 +129,7 @@ function AddStudent() {
             />
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} ref={formRef}>
             <span className={Styles.inputSeperator}>Personal Details</span>
 
             <Grid container spacing={2}>
@@ -423,6 +426,7 @@ function AddStudent() {
                   sx={{ width: "100%" }}
                   label="Contact Number"
                   variant="outlined"
+                  type="number"
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -436,6 +440,7 @@ function AddStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Contact Alternate"
+                  type="number"
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -449,6 +454,7 @@ function AddStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Email"
+                  type="email"
                   variant="outlined"
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -505,6 +511,7 @@ function AddStudent() {
                 <TextField
                   sx={{ width: "100%" }}
                   label="Postal Code"
+                  type="number"
                   variant="outlined"
                   onChange={(e) =>
                     setFormData((prev) => ({
