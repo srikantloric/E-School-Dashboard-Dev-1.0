@@ -6,6 +6,7 @@ import { IconCoinRupee, IconDashboard, IconFingerprint, IconFriends, IconMail, I
 import AddStudent from "../../pages/Users/AddStudent";
 import UnderConstruction from "../../pages/Extras/UnderConstruction";
 import FeeManager from "../../pages/FeeManager/FeeManager";
+import FeaturesConfig from "../../FeaturesConfig";
 export const routesConfig =
     [
         {
@@ -49,7 +50,7 @@ export const routesConfig =
             icon: IconUsers,
             isCollapsable: false,
             isHeader: false,
-            Component: Faculties,
+            Component: FeaturesConfig.FACULTY_FEATURE?Faculties:UnderConstruction,
       
         },
         {
@@ -62,7 +63,7 @@ export const routesConfig =
             icon: IconCoinRupee,
             isCollapsable: false,
             isHeader: false,
-            Component: FeeManager,
+            Component: FeaturesConfig.PAYMENT_FEATURE?FeeManager:UnderConstruction,
             
         },
         {
@@ -71,7 +72,7 @@ export const routesConfig =
             icon: IconFingerprint,
             isCollapsable: false,
             isHeader: false,
-            Component: UnderConstruction,
+            Component: FeaturesConfig.ATTENDANCE_FEATURE?Attendance:UnderConstruction,
           
         },
      
