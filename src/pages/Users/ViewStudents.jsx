@@ -47,6 +47,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { MoreVert } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 import { useSnackbar } from "notistack";
+import ConfirmationModal from "../../components/Modals/ConfirmationModal";
 
 //tabs
 function CustomTabPanel(props) {
@@ -86,7 +87,6 @@ function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
   const isDataLoading = useSelector((state) => state.student.loading);
   const error = useSelector((state) => state.student.error);
-  console.log(data)
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -106,6 +106,11 @@ function ViewStudents() {
   const [modalOpen, setModalOpen] = useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
+
+  //confirmation Modal
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [selectedStudentUID, setSelectedStudentUID] = useState();
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   ///menu state
   const [anchorEl, setAnchorEl] = useState(null);
@@ -179,19 +184,23 @@ function ViewStudents() {
   };
 
   const deletestudent = (data) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dipatch(deleltedata(data.id));
-      }
-    });
+    setDeleteLoading(false);
+    setConfirmationModal(true);
+    setSelectedStudentUID(data.id);
+  };
+
+  const handleStudentDelete = () => {
+    setDeleteLoading(true);
+    dipatch(deleltedata(selectedStudentUID))
+      .unwrap()
+      .then((data) => {
+        console.log("delete student", data);
+        setConfirmationModal(false);
+        enqueueSnackbar("Student deleted successfully !", {
+          variant: "success",
+        });
+        setDeleteLoading(false);
+      });
   };
 
   const navigate = useNavigate();
@@ -255,6 +264,12 @@ function ViewStudents() {
     <PageContainer className={Styles.page}>
       <Navbar />
       <LSPage>
+        <ConfirmationModal
+          open={confirmationModal}
+          setModalOpen={setConfirmationModal}
+          handleStudentDelete={handleStudentDelete}
+          deleteLoading={deleteLoading}
+        />
         <Paper
           sx={{ padding: "5px 10px", width: "100%" }}
           className={Styles.viewStudentHeader}
@@ -619,7 +634,7 @@ function ViewStudents() {
                 index={3}
               >
                 <div>
-                <div className={Styles.paymentbox}>
+                  <div className={Styles.paymentbox}>
                     <div className={Styles.paymentboxchild}>
                       <div className={Styles.paymentStatus}>
                         <p>Successful</p>
@@ -632,9 +647,9 @@ function ViewStudents() {
                       </div>
                     </div>
                     <div className={Styles.paymentDate}>
-                        <p>Bonus: 0</p>
-                        <p>Credit by</p>
-                      </div>
+                      <p>Bonus: 0</p>
+                      <p>Credit by</p>
+                    </div>
                   </div>
                   <div className={Styles.paymentbox}>
                     <div className={Styles.paymentboxchild}>

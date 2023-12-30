@@ -34,16 +34,16 @@ function Sidebar() {
     >
       <div className="sidebar">
         <div className="sidebar-logo">
-          <img src={OPSLogo}/>
+          <img src={OPSLogo} alt="school logo"/>
         </div>
         <div className="sidebar-menu">
           {routesConfig.map((menus, index) => {
             if (menus.isHeader) {
-              return <p key={index}>{menus.title}</p>;
+              return <p key={menus.title}>{menus.title}</p>;
             } else {
               return (
                 <>
-                  <SIdebarMenuItem key={index} menus={menus} />
+                  <SIdebarMenuItem key={menus.title} menus={menus} />
                 </>
               );
             }

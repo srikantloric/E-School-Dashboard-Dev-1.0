@@ -105,13 +105,14 @@ function UpdateStudent() {
     dispatch(
       updatedatastudent({
         studentdata: formData,
-        imageupdate: selectedImage
+        imageupdate: selectedImage,
       })
     )
       .unwrap()
       .then((msg) => {
         if (msg) {
-          setEditable(false)
+          setEditable(false);
+          
         }
       });
   };

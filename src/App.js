@@ -39,7 +39,7 @@ function App() {
     setIsActive(status);
   }
 
-console.log(useFlags())  
+// console.log(useFlags())  
 
 
   return (
