@@ -8,6 +8,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import GrainIcon from "@mui/icons-material/Grain";
 import Styles from "./FacultiesDetails.module.scss";
+import PersonIcon from "@mui/icons-material/Person";
 import { enqueueSnackbar } from "notistack";
 import {
   Box,
@@ -102,7 +103,7 @@ function FacultyDetail() {
   }, []);
   const paymentdetail = (paymentcard, index) => {
     return (
-      <div className={Styles.paymentbox} > 
+      <div className={Styles.paymentbox}>
         <div className={Styles.paymentboxchild}>
           <div className={Styles.paymentStatus}>
             <p>Successful</p>
@@ -115,8 +116,8 @@ function FacultyDetail() {
           </div>
         </div>
         <div className={Styles.paymentBonus}>
-        <p>Bonus: {paymentcard.payment_bonus}</p>
-         <p>Credit by:{paymentcard.payment_by}</p>
+          <p>Bonus: {paymentcard.payment_bonus}</p>
+          <p>Credit by:{paymentcard.payment_by}</p>
         </div>
       </div>
     );
@@ -166,55 +167,93 @@ function FacultyDetail() {
       <PageContainer>
         <Navbar />
         <LSPage>
-          <Breadcrumbs aria-label="breadcrumb">
-            <a
-              style={{
-                textDecoration: "none",
-                color: "#343a40",
-                display: "flex",
-                alignItems: "center",
-              }}
-              href="/"
-            >
-              <HomeIcon sx={{ mr: 0.3 }} fontSize="inherit" />
-              Faculties
-            </a>
+          <Paper
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              // margin: "5px",
+            }}
+          >
+            <Breadcrumbs aria-label="breadcrumb">
+              <a
+                style={{
+                  textDecoration: "none",
+                  color: "#343a40",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                href="/"
+              >
+                <PersonIcon sx={{ color: "var(--bs-gray-500)" }} />
+                <Typography sx={{ ml: "4px" }}>Faculty Management</Typography>
+              </a>
 
-            <Typography
-              sx={{ display: "flex", alignItems: "center" }}
-              color="text.secondary"
-            >
-              <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
-              Faculty Detail
-            </Typography>
-          </Breadcrumbs>
+              <Typography
+                sx={{ display: "flex", alignItems: "center" }}
+                color="text.secondary"
+              >
+                Faculties
+              </Typography>
+              <Typography
+                sx={{ display: "flex", alignItems: "center" }}
+                color="text.secondary"
+              >
+                <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
+                {id}
+              </Typography>
+            </Breadcrumbs>
+          </Paper>
 
           <br></br>
           <br></br>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              backgroundColor: "var(--bs-gray-201)",
+              padding: "10px",
+            }}
+          >
             <div style={{ display: "flex" }}>
               <div>
                 <img
                   src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
-                  height={150}
-                  width={140}
+                  height="100%"
+                  width={100}
                   style={{ objectFit: "cover" }}
                 />
               </div>
               <div style={{ padding: "5px 15px" }}>
-                <h3>{teacherData && teacherData.faculty_name}</h3>
+                <h4
+                  style={{ margin: 0, padding: 0, textTransform: "uppercase" }}
+                >
+                  {teacherData && teacherData.faculty_name}
+                </h4>
 
-                <div style={{ marginTop: "1rem" }}>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Birth : {teacherData && teacherData.dob}
-                  </p>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Date Of Joining : {teacherData && teacherData.doj}
-                  </p>
-                  <p style={{ padding: 3, margin: 0 }}>
-                    Contact : +91-
-                    {teacherData && teacherData.faculty_phone_number}
-                  </p>
+                <div style={{ marginTop: "1.1rem",display:"flex" }}>
+                  <div>
+                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
+                      Date Of Birth 
+                    </p>
+                    <p style={{ padding: 3, margin: 0,fontSize: "14px", }}>
+                      Date Of Joining 
+                    </p>
+                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
+                      Contact 
+                     
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
+                      : {teacherData && teacherData.dob}
+                    </p>
+                    <p style={{ padding: 3, margin: 0,fontSize: "14px", }}>
+                      : {teacherData && teacherData.doj}
+                    </p>
+                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
+                      : +91-{teacherData && teacherData.faculty_phone_number}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

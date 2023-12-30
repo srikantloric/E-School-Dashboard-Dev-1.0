@@ -49,14 +49,14 @@ function AddStudent() {
     date_of_addmission: "",
     gender: "",
     blood_group: "",
-    id:"",
+    id: "",
     class: "",
     section: "",
     email: "",
     cast: "",
     religion: "",
     father_name: "",
-    profil_url:"",
+    profil_url: "",
     father_occupation: "",
     father_qualification: "",
     mother_name: "",
@@ -82,7 +82,7 @@ function AddStudent() {
         enqueueSnackbar("Successfully Registered", { variant: "success" });
         setLoading(false);
         setSelectedImage(null);
-        formRef.current.reset()
+        formRef.current.reset();
       })
       .catch((e) => {
         console.log({ "dispatch error": e });
@@ -95,28 +95,37 @@ function AddStudent() {
     <PageContainer>
       <Navbar />
       <LSPage>
-        <Breadcrumbs aria-label="breadcrumb">
-          <a
-            style={{
-              textDecoration: "none",
-              color: "#343a40",
-              display: "flex",
-              alignItems: "center",
-            }}
-            href="/"
-          >
-            <PersonAddIcon sx={{ mr: 0.3 }} fontSize="inherit" />
-            Faculty
-          </a>
+        <div
+          style={{
+            backgroundColor: "var(--bs-gray-201)",
+            padding: "10px",
+            borderRadius: "5px",
+            margin: "0px 8px",
+          }}
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <a
+              style={{
+                textDecoration: "none",
+                color: "#343a40",
+                display: "flex",
+                alignItems: "center",
+              }}
+              href="/"
+            >
+              <PersonAddIcon sx={{ mr: 0.3 }} fontSize="inherit" />
+              Faculty
+            </a>
 
-          <Typography
-            sx={{ display: "flex", alignItems: "center" }}
-            color="text.secondary"
-          >
-            <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
-            All Faculties
-          </Typography>
-        </Breadcrumbs>
+            <Typography
+              sx={{ display: "flex", alignItems: "center" }}
+              color="text.secondary"
+            >
+              <GrainIcon sx={{ mr: 0.3 }} fontSize="inherit" />
+              All Faculties
+            </Typography>
+          </Breadcrumbs>
+        </div>
         <br />
         <Paper
           sx={{ padding: "10px 30px", margin: "0px 10px " }}
