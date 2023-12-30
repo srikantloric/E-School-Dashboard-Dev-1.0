@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -15,6 +16,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,6 +34,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import { DialogContent, Modal, ModalDialog } from "@mui/joy";
 import ModalLoader from "../../components/Loader/ModalLoader";
+import { Edit } from "@mui/icons-material";
 
 function UpdateStudent() {
   const printRef = useRef();
@@ -41,6 +44,8 @@ function UpdateStudent() {
   const [profileImage, setProfileimage] = useState("");
   const [loading, setLoading] = useState(false);
   const users = useSelector((state) => state.student.studentarray);
+  const [editable, setEditable] = useState(false);
+
   const [formData, setFormData] = useState({
     student_name: "",
     class_roll: "",
@@ -98,8 +103,18 @@ function UpdateStudent() {
   const updateStudentData = (e) => {
     e.preventDefault();
     dispatch(
-      updatedatastudent({ studentdata: formData, imageupdate: selectedImage })
-    );
+      updatedatastudent({
+        studentdata: formData,
+        imageupdate: selectedImage,
+      })
+    )
+      .unwrap()
+      .then((msg) => {
+        if (msg) {
+          setEditable(false);
+          
+        }
+      });
   };
 
   const handleSubmit = (event) => {
@@ -108,6 +123,10 @@ function UpdateStudent() {
   };
   const canclebutton = () => {
     window.history.back();
+  };
+
+  const handleSwitch = (e) => {
+    setEditable(e.target.checked);
   };
   return (
     <PageContainer>
@@ -122,11 +141,13 @@ function UpdateStudent() {
           >
             <div className={Styles.pageHeader}>
               <h3>Update Student Data</h3>
-              <ReactToPrint
-                content={() => printRef.current}
-                copyStyles={true}
-                trigger={() => <IconPrinter size={45} />}
-              />
+              <FormGroup>
+                <FormControlLabel
+                  control={<Switch onChange={handleSwitch} />}
+                  label="Edit"
+                  labelPlacement="start"
+                />
+              </FormGroup>
             </div>
 
             <form onSubmit={updateStudentData}>
@@ -136,6 +157,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Name"
+                    disabled={!editable}
                     value={formData.student_name}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -155,6 +177,7 @@ function UpdateStudent() {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       label="Class"
+                      disabled={!editable}
                       value={formData.class}
                       onChange={(e) =>
                         setFormData((prev) => ({
@@ -186,6 +209,7 @@ function UpdateStudent() {
                       id="demo-simple-select"
                       value={formData.section}
                       label="SECTION"
+                      disabled={!editable}
                       onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
@@ -206,6 +230,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Class Roll No"
                     type="number"
+                    disabled={!editable}
                     variant="outlined"
                     value={formData.class_roll}
                     onChange={(e) =>
@@ -221,6 +246,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="DOB"
+                    disabled={!editable}
                     variant="outlined"
                     value={formData.dob}
                     onChange={(e) =>
@@ -238,6 +264,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Admission Date"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.date_of_addmission}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -258,6 +285,7 @@ function UpdateStudent() {
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       label="Gender"
+                      disabled={!editable}
                       value={formData.gender}
                       onChange={(e) =>
                         setFormData((prev) => ({
@@ -277,6 +305,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Blood Group"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.blood_group}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -292,6 +321,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Religion"
+                    disabled={!editable}
                     variant="outlined"
                     value={formData.religion}
                     onChange={(e) =>
@@ -308,6 +338,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Cast"
+                    disabled={!editable}
                     value={formData.cast}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -330,6 +361,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Father's Name"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.father_name}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -345,6 +377,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Occupation"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.father_occupation}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -360,6 +393,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Qualification"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.father_qualification}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -374,6 +408,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Mother's Name"
+                    disabled={!editable}
                     value={formData.mother_name}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -389,6 +424,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Occupation"
+                    disabled={!editable}
                     value={formData.mother_occupation}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -404,6 +440,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Qualification"
+                    disabled={!editable}
                     value={formData.motherqualifiation}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -427,6 +464,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Contact Number"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.Contactnumber}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -441,6 +479,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="Contact Alternate"
+                    disabled={!editable}
                     value={formData.AlternateNumber}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -456,6 +495,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Email"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -471,6 +511,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Address Full"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.Address}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -485,6 +526,7 @@ function UpdateStudent() {
                   <TextField
                     sx={{ width: "100%" }}
                     label="City"
+                    disabled={!editable}
                     value={formData.city}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -502,6 +544,7 @@ function UpdateStudent() {
                     label="State"
                     variant="outlined"
                     required
+                    disabled={!editable}
                     value={formData.state}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -516,6 +559,7 @@ function UpdateStudent() {
                     sx={{ width: "100%" }}
                     label="Postal Code"
                     variant="outlined"
+                    disabled={!editable}
                     value={formData.PostalCode}
                     onChange={(e) =>
                       setFormData((prev) => ({
@@ -532,6 +576,7 @@ function UpdateStudent() {
                   marginLeft="1rem"
                   width="100%"
                   gutterBottom
+                  marginTop="10px"
                 >
                   Profile Image Upload
                 </Typography>
@@ -542,6 +587,7 @@ function UpdateStudent() {
                   accept="image/png ,image/jpeg"
                   style={{ display: "none" }}
                   id="imageInput"
+                  disabled={!editable}
                   onChange={handleImageChange}
                 />
                 {selectedImage ? (
@@ -551,6 +597,7 @@ function UpdateStudent() {
                     style={{
                       width: "50px",
                       height: "50px",
+                      marginLeft: "20px",
                       borderRadius: "50%",
                     }}
                   />
@@ -561,6 +608,7 @@ function UpdateStudent() {
                     style={{
                       width: "50px",
                       height: "50px",
+                      marginLeft: "20px",
                       borderRadius: "50%",
                     }}
                   />
@@ -570,47 +618,47 @@ function UpdateStudent() {
                   <Button
                     component="span"
                     variant="outlined"
+                    disabled={!editable}
                     style={{ marginTop: "10px", marginLeft: "1rem" }}
                   >
-                    Choose Image
+                    Edit Image
                   </Button>
                 </label>
               </Grid>
 
               <br />
               <Grid md={12} sx={{ display: "flex", justifyContent: "end" }}>
-                <Button
-                  sx={{
-                    height: "3em",
-
-                    background: "var(--bs-secondary)",
-                  }}
-                  variant="contained"
-                  disableElevation
-                >
-                  Reset
-                </Button>
                 <Grid
                   item
                   xs={12}
                   sx={{
                     display: "flex",
                     justifyContent: "start",
-                    marginLeft: "1rem",
                   }}
                 >
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button
+                    sx={{
+                      height: "3em",
+                      background: "var(--bs-danger2)",
+                    }}
+                    variant="contained"
+                    disableElevation={true}
+                    onClick={canclebutton}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "var(--bs-primary)",
+                      marginLeft: "1rem",
+                    }}
+                    type="submit"
+                    disableElevation={true}
+                  >
                     Update Profil
                   </Button>
                 </Grid>
-                <Button
-                  sx={{ height: "3em", marginLeft: "1rem", background: "Red" }}
-                  variant="contained"
-                  disableElevation={true}
-                  onClick={canclebutton}
-                >
-                  Cancle
-                </Button>
               </Grid>
               <br></br>
             </form>

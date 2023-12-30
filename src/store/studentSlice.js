@@ -26,18 +26,19 @@ export const addstudent = createAsyncThunk(
       .createUserWithEmailAndPassword(userEmail, userPass)
       .then((user) => {
         const userId = user.user.uid;
+        studentData['id'] = userId;
         //adding user to db
         return db
           .collection("STUDENTS")
           .doc(userId)
           .set(studentData)
           .then((snapshot) => {
+
             ///uploading user profile in storage
             if (studentProfile) {
               const fileRef = storageRef.child(
                 `profileImages/${userId}/${studentData.email}`
               );
-
               resizeFile(studentProfile).then((img) => {
                 // const uploadTask = fileRef.put(img);
                 const uploadTask = fileRef.putString(img, "data_url");
@@ -51,16 +52,17 @@ export const addstudent = createAsyncThunk(
                     fileRef.getDownloadURL().then((url) => {
                       let fData = {
                         profil_url: url,
-                        time_stamp:
-                          firebase.firestore.FieldValue.serverTimestamp(),
                       };
+                      studentData['profil_url'] = url;
+
+
                       ///saving image url in doc
                       return db
                         .collection("STUDENTS")
                         .doc(userId)
                         .update(fData)
                         .then(() => {
-                          return "user image inserted successfully";
+                          return studentData;
                         })
                         .catch((er) => {
                           return rejectWithValue(er);
@@ -73,15 +75,15 @@ export const addstudent = createAsyncThunk(
               let fData = {
                 profil_url:
                   studentData.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
-                time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
               };
+              studentData['profil_url'] = fData.profil_url;
               ///saving image url in doc
               return db
                 .collection("STUDENTS")
                 .doc(userId)
                 .update(fData)
                 .then(() => {
-                  return "user image inserted successfully";
+                  return studentData
                 })
                 .catch((er) => {
                   return rejectWithValue(er);
@@ -124,21 +126,18 @@ export const fetchstudent = createAsyncThunk("student/fetchstudent", () => {
 export const deleltedata = createAsyncThunk(
   "student/deletestudent",
   async (id) => {
-    // for (var i = 0; i <= id.length; i++) {
-    //   console.log(id[i]);
-    // }
+   
     console.log("deleting Student:", id);
-    db.collection("STUDENTS")
+    return db
+      .collection("STUDENTS")
       .doc(id)
       .delete()
       .then(() => {
-        auth.
-        Alert("Document successfully deleted!");
+        return id;
       })
       .catch((error) => {
         console.error("Error removing document: ", error);
       });
-    return id;
   }
 );
 
@@ -180,7 +179,7 @@ export const updatedatastudent = createAsyncThunk(
     } catch (e) {
       console.log(e);
     }
-    }
+  }
 );
 
 const studentslice = createSlice({
@@ -200,6 +199,7 @@ const studentslice = createSlice({
 
     [addstudent.fulfilled]: (state, action) => {
       state.loading = false;
+      console.log("addstudent payload : ",action.payload)
       state.studentarray.push(action.payload);
     },
     [addstudent.rejected]: (state, action) => {
