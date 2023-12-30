@@ -127,11 +127,12 @@ export const deleltedata = createAsyncThunk(
     // for (var i = 0; i <= id.length; i++) {
     //   console.log(id[i]);
     // }
-    console.log("delete Student:", id);
+    console.log("deleting Student:", id);
     db.collection("STUDENTS")
       .doc(id)
       .delete()
       .then(() => {
+        auth.
         Alert("Document successfully deleted!");
       })
       .catch((error) => {
@@ -179,80 +180,7 @@ export const updatedatastudent = createAsyncThunk(
     } catch (e) {
       console.log(e);
     }
-
-    // return db
-    //   .collection("STUDENTS")
-    //   .doc(studentdata.id)
-    //   .set(studentdata)
-    //   .then(() => {
-    //     // console.log(studentdata);
-    //     //uploading profile if changes
-    //     if (imageupdate) {
-    //       console.log("uploading new profile..");
-    //       const fileRef = storageRef.child(
-    //         `profileImages/${studentdata.id}/${studentdata.email}`
-    //       );
-
-    //       resizeFile(imageupdate).then((img) => {
-    //         // const uploadTask = fileRef.put(img);
-    //         const uploadTask = fileRef.putString(img, "data_url");
-    //         uploadTask.on(
-    //           "state_changed",
-    //           function (snapshot) {},
-    //           function (error) {
-    //             console.log(error)
-    //           },
-    //           function () {
-    //             fileRef.getDownloadURL().then((url) => {
-    //               studentdata["profil_url"] = url;
-    //               let fData = {
-    //                 profil_url: url,
-    //                 time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
-    //               };
-    //               console.log(studentdata)
-    //               ///saving image url in doc
-    //               db
-    //                 .collection("STUDENTS")
-    //                 .doc(studentdata.id)
-    //                 .update(fData)
-    //                 .then(() => {
-    //                   Alert("Updated Successfully!");
-    //                 })
-    //                 .catch((er) => {
-    //                   console.log(er.message)
-    //                 });
-    //                 return studentdata;
-    //             });
-    //           }
-    //         );
-    //       });
-    //     } else {
-    //       return studentdata
-    //     }
-    // } else {
-    //   let fData = {
-    //     profil_url:
-    //       studentdata.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
-    //     time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
-    //   };
-    //   return db
-    //     .collection("STUDENTS")
-    //     .doc(studentdata.id)
-    //     .update(fData)
-    //     .then(() => {
-    //       Alert("Updated Successfully!");
-    //       return "user image inserted successfully";
-    //     })
-    //     .catch((er) => {
-    //       return rejectWithValue(er);
-    //     });
-    // }
-    // })
-    // .catch((e) => {
-    //   console.log(e);
-    //   return -1;
-    // });
-  }
+    }
 );
 
 const studentslice = createSlice({

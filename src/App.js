@@ -17,6 +17,7 @@ import UpdateStudent from "./pages/Users/Update";
 import FacultyDetail from "./pages/FacutyManagment/FacultyDetail"
 import StudentFeeList from "./pages/FeeManager/StudentFeeDetails";
 import StudentFeeDetails from "./pages/FeeManager/StudentFeeDetails";
+import { useFlags } from "./components/Utils/FlagsProvider";
 
 
 
@@ -38,7 +39,7 @@ function App() {
     setIsActive(status);
   }
 
-  
+console.log(useFlags())  
 
 
   return (

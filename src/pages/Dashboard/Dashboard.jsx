@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import LSPage from "../../components/Utils/LSPage";
 import {
@@ -27,6 +27,7 @@ import BarGraphChart from "../../components/Graph/BarGraphChart";
 import { Pages } from "@mui/icons-material";
 import style from "./Dashboard.module.scss"
 import Card2 from "../../components/Card/Card2";
+import { enqueueSnackbar } from "notistack";
 
 Chart.register(CategoryScale);
 
@@ -61,7 +62,12 @@ export const options = {
   },
 };
 
+
+
 function Dashboard() {
+ 
+
+
   return (
     <>
       <PageContainer>
@@ -152,14 +158,14 @@ function Dashboard() {
             <CardDashboard
               headerTitle="0"
               subHeaderTitle="Expense This Month"
-              color="#7A9D54"
-              colorBottom="#557A46"
+              color="#7C81AD"
+              colorBottom="#4B527E"
             />
             <CardDashboard
               headerTitle="0"
               subHeaderTitle="Expense Today"
-              color="#AE445A"
-              colorBottom="#662549"
+              color="#EAD7BB"
+              colorBottom="#BCA37F"
             />
           </Grid>
         </LSPage>
