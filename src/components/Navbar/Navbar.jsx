@@ -58,9 +58,9 @@ function Navbar() {
   }
 
   const handleLogout = () => {
-    console.log("called logout")
+    console.log("called logout");
     auth.signOut();
-  }
+  };
 
   useEffect(() => {
     const updateDimension = () => {
@@ -114,7 +114,7 @@ function Navbar() {
           <div className="rounded-bg">
             <Tooltip title="Message">
               <IconButton aria-label={notificationsLabel(100)}>
-                <Badge badgeContent={9} color="primary">
+                <Badge badgeContent={0} color="primary">
                   <IconMessage2 size={22} />
                 </Badge>
               </IconButton>
@@ -124,12 +124,20 @@ function Navbar() {
             <IconButton
               onClick={handleClick}
               size="small"
-              sx={{ ml: 2 }}
+              sx={{ ml: 2, backgroundColor: "var(--bs-gray-300)" }}
               aria-controls={open ? "account-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>A</Avatar>
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: "var(--bs-orange)",
+                }}
+              >
+                A
+              </Avatar>
             </IconButton>
           </Tooltip>
 
@@ -181,9 +189,9 @@ function Navbar() {
               Settings
             </MenuItem>
             <MenuItem onClick={handleLogout}>
-              <ListItemIcon >
-                <IconButton onClick={handleLogout} >
-                <Logout fontSize="small" />
+              <ListItemIcon>
+                <IconButton onClick={handleLogout}>
+                  <Logout fontSize="small" />
                 </IconButton>
               </ListItemIcon>
               Logout

@@ -5,36 +5,22 @@ import firebase from "../firebase";
 import { Alert, Alert2 } from "../components/Utils/Alert";
 import Swal from "sweetalert2";
 import { FEMALE_DUMMY, MALE_DUMMY } from "../assets/dummyProfil";
-
+import FileResizer from "react-image-file-resizer";
 
 //ADD STUDENT
 export const addstudent = createAsyncThunk(
   "add-students/addstudent",
-  async ({ studentData, studentProfile },{rejectWithValue}) => {
-
+  async ({ studentData, studentProfile }, { rejectWithValue }) => {
     let userPass = String(studentData.dob).split("-").reverse().join(""); //extracting password from dob
     const userEmail = "ops" + studentData.admission_no + "@ops.com"; // creating userID using admission no
     studentData["student_id"] = userEmail;
 
-    // return auth.createUserWithEmailAndPassword(userEmail, userPass)
-    //   .then((user) => {
-    //     const userId = user.user.uid;
-    //        db.collection("STUDENTS")
-    //       .doc(userId)
-    //       .set(studentData)
-    //           .then(() => {
-    //             console.log("student regitred")
-            
-    //           }).catch((er) => {
-    //         return rejectWithValue(er.message)
-    //       })
-
-    //   }).catch((e) => {
-    //     console.log(e.message)
-    //     return rejectWithValue(e.message)
-    //   });
-
-
+    const resizeFile = (file) =>
+      new Promise((resolve) => {
+        FileResizer.imageFileResizer(file, 500, 500, "WEBP", 100, 0, (uri) => {
+          resolve(uri);
+        });
+      });
 
     // / Creating user in db
     return auth
@@ -42,7 +28,8 @@ export const addstudent = createAsyncThunk(
       .then((user) => {
         const userId = user.user.uid;
         //adding user to db
-        return db.collection("STUDENTS")
+        return db
+          .collection("STUDENTS")
           .doc(userId)
           .set(studentData)
           .then((snapshot) => {
@@ -51,85 +38,88 @@ export const addstudent = createAsyncThunk(
               const fileRef = storageRef.child(
                 `profileImages/${userId}/${studentData.email}`
               );
-              const uploadTask = fileRef.put(studentProfile);
-              uploadTask.on(
-                "state_changed",
-                function (snapshot) {},
-                function (error) {
-                  return rejectWithValue(error)
-                },
-                function () {
-                  fileRef.getDownloadURL().then((url) => {
-                    let fData = {
-                      profil_url: url,
-                      time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    };
-                    ///saving image url in doc
-                    return db.collection("STUDENTS")
-                      .doc(userId)
-                      .update(fData)
-                      .then(() => {
-                        return "user image inserted successfully";
-                      }).catch((er) => {
-                        return rejectWithValue(er)
-                      });
-                  });
-                }
-              );
+
+              resizeFile(studentProfile).then((img) => {
+                // const uploadTask = fileRef.put(img);
+                const uploadTask = fileRef.putString(img, "data_url");
+                uploadTask.on(
+                  "state_changed",
+                  function (snapshot) {},
+                  function (error) {
+                    return rejectWithValue(error);
+                  },
+                  function () {
+                    fileRef.getDownloadURL().then((url) => {
+                      let fData = {
+                        profil_url: url,
+                        time_stamp:
+                          firebase.firestore.FieldValue.serverTimestamp(),
+                      };
+                      ///saving image url in doc
+                      return db
+                        .collection("STUDENTS")
+                        .doc(userId)
+                        .update(fData)
+                        .then(() => {
+                          return "user image inserted successfully";
+                        })
+                        .catch((er) => {
+                          return rejectWithValue(er);
+                        });
+                    });
+                  }
+                );
+              });
             } else {
-              
               let fData = {
-                profil_url:studentData.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
+                profil_url:
+                  studentData.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
                 time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
               };
               ///saving image url in doc
-              return db.collection("STUDENTS")
+              return db
+                .collection("STUDENTS")
                 .doc(userId)
                 .update(fData)
                 .then(() => {
                   return "user image inserted successfully";
-                }).catch((er) => {
-                  return rejectWithValue(er)
+                })
+                .catch((er) => {
+                  return rejectWithValue(er);
                 });
-            
-          
 
-              console.log("no image attached")
+              console.log("no image attached");
             }
-
           })
           .catch((error) => {
             console.log(error);
-            return rejectWithValue(error)
+            return rejectWithValue(error);
           });
       })
       .catch((error) => {
         console.log(error);
-        return rejectWithValue(error)
+        return rejectWithValue(error);
       });
   }
 );
 
 //FETCH STUDENT
-export const fetchstudent = createAsyncThunk(
-  "student/fetchstudent",
-  () => {
-    console.log("fetch data query triggered")
-    return db
+export const fetchstudent = createAsyncThunk("student/fetchstudent", () => {
+  console.log("fetch data query triggered");
+  return db
     .collection("STUDENTS")
     .get()
     .then((snap) => {
       const students = [];
-        snap.forEach((doc) => {
-          students.push({ ...doc.data(), id: doc.id });
-        });
-        return students;
-      })
+      snap.forEach((doc) => {
+        students.push({ ...doc.data(), id: doc.id });
+      });
+      return students;
+    });
 
-    // console.log(students);
-    // return students;
-  }
-);
+  // console.log(students);
+  // return students;
+});
 
 //DELETE STUDENT
 export const deleltedata = createAsyncThunk(
@@ -138,7 +128,7 @@ export const deleltedata = createAsyncThunk(
     // for (var i = 0; i <= id.length; i++) {
     //   console.log(id[i]);
     // }
-    console.log("delete Student:",id);
+    console.log("delete Student:", id);
     db.collection("STUDENTS")
       .doc(id)
       .delete()
@@ -163,19 +153,20 @@ export const updatedatastudent = createAsyncThunk(
         //uploading profile if changes
         if (imageupdate) {
           storageRef
-          .child(`images/${studentdata.email}`)
-          .put(imageupdate)
-          .then((snapshot) => {
-            Alert("Updated Successfully !");
-          }).catch(e => {
-            console.log("error while uploading image",e)
-          });
+            .child(`images/${studentdata.email}`)
+            .put(imageupdate)
+            .then((snapshot) => {
+              Alert("Updated Successfully !");
+            })
+            .catch((e) => {
+              console.log("error while uploading image", e);
+            });
         } else {
           Alert("Updated Successfully !");
         }
-
-      }).catch((e) => {
-        console.log(e)
+      })
+      .catch((e) => {
+        console.log(e);
       });
     return studentdata;
   }
@@ -205,14 +196,12 @@ const studentslice = createSlice({
       state.error = action.payload.message;
     },
 
-
     [fetchstudent.pending]: (state) => {
       state.loading = true;
     },
     [fetchstudent.fulfilled]: (state, action) => {
       state.loading = false;
       state.studentarray = action.payload;
-
     },
     [fetchstudent.rejected]: (state, action) => {
       state.loading = false;

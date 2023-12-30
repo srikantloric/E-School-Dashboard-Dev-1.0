@@ -95,7 +95,7 @@ function Login() {
       <div className="right-section">
         <div className="login-card">
           <img src={DashboardConfig.logo} alt="logo" className="logo" />
-          <h2>Hello Again!</h2>
+          <h2>Orient Public School</h2>
           <p>
             Welcome to School Management Dashboard: Elevating Education
             Effortlessly!

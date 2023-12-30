@@ -27,7 +27,7 @@ export const routesConfig =
             icon: IconFriends,
             isCollapsable: false,
             isHeader: false,
-            Component: Students,
+            Component: AddStudent,
             childrens: [{
                 title: "Add Student",
                 to: "/add-students",
@@ -66,7 +66,7 @@ export const routesConfig =
             
         },
         {
-            title: "Attendance Management",
+            title: "Attendance ",
             to: "/Attendance",
             icon: IconFingerprint,
             isCollapsable: false,

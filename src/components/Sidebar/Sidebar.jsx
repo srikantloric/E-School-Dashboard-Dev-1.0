@@ -6,6 +6,7 @@ import SideBarContext from "../../context/SidebarContext";
 import { motion } from "framer-motion";
 import { IconChevronDown, IconChevronUp, IconPoint } from "@tabler/icons-react";
 import SIdebarMenuItem from "./SIdebarMenuItem";
+import OPSLogo from '../../assets/opslogo.png'
 
 function Sidebar() {
   const status = useContext(SideBarContext);
@@ -33,7 +34,7 @@ function Sidebar() {
     >
       <div className="sidebar">
         <div className="sidebar-logo">
-          <img src="https://demos.adminmart.com/premium/react/modernize-react/docs/dist/images/logo-dark.svg" />
+          <img src={OPSLogo}/>
         </div>
         <div className="sidebar-menu">
           {routesConfig.map((menus, index) => {

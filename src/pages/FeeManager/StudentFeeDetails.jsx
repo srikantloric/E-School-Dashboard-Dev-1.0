@@ -5,15 +5,13 @@ import LSPage from "../../components/Utils/LSPage";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import GrainIcon from "@mui/icons-material/Grain";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
-import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import PrintIcon from "@mui/icons-material/Print";
-import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
+import { FEE_TABLE_COLS } from "./utilities/FeePaymentTableColumns";
+
 import {
-  Box,
   Breadcrumbs,
   Divider,
-  IconButton,
   LinearProgress,
   ListItemIcon,
   Menu,
@@ -22,48 +20,21 @@ import {
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import { Code, Delete, Edit, MoreVert } from "@mui/icons-material";
+import { Delete, Edit, MoreVert } from "@mui/icons-material";
 import PaymentIcon from "@mui/icons-material/Payment";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { db } from "../../firebase";
 import { enqueueSnackbar } from "notistack";
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Modal,
-  ModalClose,
-  Option,
-  Select,
-  Sheet,
-  Switch,
-  Typography,
-} from "@mui/joy";
+import { Button, Typography } from "@mui/joy";
+import QuickPaymentModal from "./utilities/QuickPaymentModal";
 
 //main element
 function StudentFeeDetails() {
-  function getCurrentDate() {
-    const dateObj = new Date();
-    const currDate =
-      dateObj.getFullYear() +
-      "-" +
-      (dateObj.getMonth() + 1) +
-      "-" +
-      dateObj.getDate();
-    return currDate;
-  }
-
+  const [modelOpen, setModelOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [feeDetails, setFeeDetails] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [paymentDate, setPaymentDate] = useState(getCurrentDate());
   const [paymentRemarks, setPaymentRemarks] = useState("");
-  const [paymentMode, setPaymentMode] = useState("cash");
-  const [paidAmount, setPaidAmount] = useState();
-  const [sendSms, setSendSMS] = useState(true);
-  const [paidAmountError, setPaidAmountError] = useState(false);
 
   const historyRef = useNavigate();
   const location = useLocation();
@@ -71,9 +42,6 @@ function StudentFeeDetails() {
   ///Sof Menu State
   const [anchorEll, setAnchorEll] = useState(null);
   const menuOpen = Boolean(anchorEll);
-  const [modelOpen, setModelOpen] = useState(false);
-  const [remarkError, setRemarkError] = useState("");
-  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const handleMenuClick = (event, rowData) => {
     setAnchorEll(event.currentTarget);
@@ -85,50 +53,6 @@ function StudentFeeDetails() {
     setAnchorEll(null);
   };
   //Eof Menu State
-
-  const DEMO_COLS = [
-    {
-      field: "id",
-      title: "Payment ID",
-    },
-    // { field: "name", title: "Student" },
-    // { field: "name", title: "Parent" },
-    { field: "fee_title", title: "Fee Title" },
-    { field: "fee_total", title: "Total" },
-    { field: "discount_amount", title: "Disc." },
-    { field: "late_fee", title: "Late Fee" },
-    { field: "paid_amount", title: "Paid" },
-    { field: "due_amount", title: "Due" },
-    {
-      field: "payment_status",
-      title: "Status",
-      render: (rowData) => {
-        const styles = {
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          cursor: "pointer",
-          objectFit: "cover",
-        };
-        return (
-          <p
-            style={{
-              color: "var(--bs-white)",
-              backgroundColor: `${
-                rowData.payment_status === "paid"
-                  ? "var(--bs-success)"
-                  : "var(--bs-danger2)"
-              }`,
-              textAlign: "center",
-              textTransform: "capitalize",
-            }}
-          >
-            {rowData.payment_status}
-          </p>
-        );
-      },
-    },
-  ];
 
   useEffect(() => {
     setLoading(true);
@@ -160,56 +84,6 @@ function StudentFeeDetails() {
       enqueueSnackbar("User document not found !", { variant: "error" });
     }
   }, []);
-
-  ////Modal
-
-  const handlePayBtn = () => {
-    setPaymentLoading(true);
-    setPaidAmountError(false);
-    if (paidAmount) {
-      const paymentData = {
-        payment_date: new Date(paymentDate),
-        payment_remarks: paymentRemarks,
-        payment_mode: paymentMode,
-        paid_amount: parseInt(selectedRow.paid_amount) + parseInt(paidAmount),
-        due_amount: selectedRow.due_amount - paidAmount,
-        payment_status: "paid",
-      };
-      // console.log("sss",selectedRow, location.state[0].id);
-      console.log(new Date(paymentDate));
-      if (location.state[0].id && selectedRow.doc_id) {
-        console.log("called");
-        db.collection("STUDENTS")
-          .doc(location.state[0].id)
-          .collection("PAYMENTS")
-          .doc(selectedRow.doc_id)
-          .update(paymentData)
-          .then((data) => {
-            setPaymentLoading(false);
-
-            const dueAmountI = selectedRow.due_amount - paidAmount;
-            selectedRow.due_amount = dueAmountI;
-
-            if (dueAmountI === 0) {
-              setSelectedRow((prevState) => ({
-                ...prevState,
-                ["payment_status"]: "paid",
-              }));
-            } else {
-              setSelectedRow((prevState) => ({
-                ...prevState,
-                ["payment_status"]: "partially paid",
-              }));
-            }
-          });
-      }
-    } else {
-      setPaidAmountError(true);
-      setPaymentLoading(false);
-    }
-  };
-
-  ////Modal
 
   return (
     <PageContainer>
@@ -360,7 +234,7 @@ function StudentFeeDetails() {
 
         <MaterialTable
           style={{ display: "grid" }}
-          columns={DEMO_COLS}
+          columns={FEE_TABLE_COLS}
           data={feeDetails}
           title="Fee Details"
           options={{
@@ -388,7 +262,6 @@ function StudentFeeDetails() {
               icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
               tooltip: "Edit Row",
               onClick: (event, rowData) => {
-                // updatestudent(rowData);
                 handleMenuClick(event);
               },
             },
@@ -479,220 +352,12 @@ function StudentFeeDetails() {
             Delete
           </MenuItem>
         </Menu>
-
-        {selectedRow ? (
-          <Modal
-            aria-labelledby="modal-title"
-            aria-describedby="modal-desc"
-            open={modelOpen}
-            onClose={() => setModelOpen(false)}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Sheet
-              variant="outlined"
-              sx={{
-                width: 550,
-                minHeight: 600,
-                borderRadius: "md",
-                p: 3,
-                boxShadow: "lg",
-              }}
-            >
-              <ModalClose variant="plain" sx={{ m: 1 }} />
-              <div style={{ display: "flex" }}>
-                <ElectricBoltIcon />
-                <Typography level="title-lg" mb={1}>
-                  Quick Payment
-                </Typography>
-              </div>
-              <Divider />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  flexDirection: "column",
-                  height: 550,
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ display: "flex" }}>
-                    <div>
-                      <Typography level="body-md" sx={{ mt: 1 }}>
-                        Payment ID :
-                      </Typography>
-                      <Typography level="body-md">Payment Title :</Typography>
-                      <Typography level="body-md">Payable Amount :</Typography>
-                      <Typography level="body-md">Late Fee:</Typography>
-                    </div>
-                    <div style={{ marginLeft: "20px" }}>
-                      <Typography
-                        level="body-md"
-                        sx={{ mt: 1, fontWeight: 700 }}
-                      >
-                        {selectedRow.id}
-                      </Typography>
-                      <Typography level="body-md">
-                        Payment for {selectedRow.fee_title}
-                      </Typography>
-                      <Typography level="body-md">
-                        Rs. {selectedRow.fee_total}
-                      </Typography>
-                      <Typography level="body-md">
-                        Rs. {selectedRow.late_fee}
-                      </Typography>
-                    </div>
-                  </div>
-                  <div style={{ marginTop: "30px" }}>
-                    <FormControl>
-                      <FormLabel>Remarks</FormLabel>
-                      <Input
-                        value={paymentRemarks}
-                        onChange={(e) => {
-                          setPaymentRemarks(e.currentTarget.value);
-                        }}
-                        disabled={
-                          selectedRow.payment_status === "paid" ? true : false
-                        }
-                        placeholder="Please enter remark for payment"
-                      />
-                      <FormHelperText>{remarkError}</FormHelperText>
-                    </FormControl>
-
-                    <FormControl sx={{ mt: 1 }}>
-                      <FormLabel required>Payment Date</FormLabel>
-                      <Input
-                        disabled={
-                          selectedRow.payment_status === "paid" ? true : false
-                        }
-                        type="date"
-                        value={paymentDate}
-                        required
-                        onChange={(e) => setPaymentDate(e.currentTarget.value)}
-                      />
-                    </FormControl>
-                    <FormControl sx={{ mt: 1 }}>
-                      <FormLabel required>Send SMS</FormLabel>
-                      <Select defaultValue="yes">
-                        <Option
-                          value="no"
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                        >
-                          No
-                        </Option>
-                        <Option
-                          value="yes"
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                        >
-                          Yes
-                        </Option>
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ mt: 1 }}>
-                      <FormLabel required>Mode Of Payment</FormLabel>
-                      <Select
-                        defaultValue="cash"
-                        onChange={(e, newVal) => {
-                          setPaymentMode(newVal);
-                        }}
-                      >
-                        <Option
-                          value="cash"
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                        >
-                          Cash
-                        </Option>
-                        <Option
-                          value="online"
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                        >
-                          Online
-                        </Option>
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography level="h3" sx={{ color: "var(--bs-danger2)" }}>
-                    Rs. {selectedRow.due_amount}
-                    <span
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 400,
-                        marginLeft: "4px",
-                      }}
-                    >
-                      Due
-                    </span>
-                  </Typography>
-
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {selectedRow.payment_status === "paid" ? (
-                      <Button startDecorator={<PrintIcon />}>
-                        Print Recipt
-                      </Button>
-                    ) : (
-                      <>
-                        <Typography>Pay -</Typography>
-                        <Input
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                          placeholder="enter amount"
-                          value={paidAmount}
-                          error={paidAmountError}
-                          onChange={(e) => {
-                            setPaidAmount(e.currentTarget.value);
-                          }}
-                          sx={{ ml: 1 }}
-                        />
-
-                        <Button
-                          variant="solid"
-                          disableElevation
-                          sx={{ ml: 2 }}
-                          color="success"
-                          loading={paymentLoading}
-                          onClick={handlePayBtn}
-                          disabled={
-                            selectedRow.payment_status === "paid" ? true : false
-                          }
-                        >
-                          Pay Now
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              {selectedRow.payment_status === "paid" ? (
-                <img
-                  style={{ position: "absolute", top: 70, right: 50 }}
-                  height={100}
-                  src="https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/Dummy%20Images%2Fpaid2.png?alt=media&token=208e9ef0-2ad8-4016-beec-507b21af2221"
-                ></img>
-              ) : null}
-            </Sheet>
-          </Modal>
-        ) : null}
+        <QuickPaymentModal
+          selectedRowData={selectedRow}
+          userPaymentData={location.state[0]}
+          modelOpen={modelOpen}
+          setModelOpen={setModelOpen}
+        />
       </LSPage>
     </PageContainer>
   );
