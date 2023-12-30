@@ -144,7 +144,7 @@ function ViewStudents() {
 
   useEffect(() => {
     if (error) {
-      enqueueSnackbar("ERROR:" + error,  { variant:"error"});
+      enqueueSnackbar("ERROR:" + error, { variant: "error" });
     }
   }, [error]);
   useEffect(() => {
@@ -202,12 +202,14 @@ function ViewStudents() {
   //column for material table
   const columnMat = [
     {
-      field: "student_id", title: "ID", render: (rowData) => {
-        const id = ""+rowData.student_id;
-        
-        return <h5>{id.split("@")[0].toLocaleUpperCase()}</h5>
-        
-    }},
+      field: "student_id",
+      title: "ID",
+      render: (rowData) => {
+        const id = "" + rowData.student_id;
+
+        return <h5>{id.split("@")[0].toLocaleUpperCase()}</h5>;
+      },
+    },
     {
       title: "Profile",
       field: "profil_url",
@@ -617,67 +619,75 @@ function ViewStudents() {
                 index={3}
               >
                 <div>
-                  <div className={Styles.paymentbox}>
-                    <div style={{ display: "flex",height:"50% "}}>
+                <div className={Styles.paymentbox}>
+                    <div className={Styles.paymentboxchild}>
                       <div className={Styles.paymentStatus}>
                         <p>Successful</p>
+                        <p>Rs 500</p>
                       </div>
-                      <p>Rs 500</p>
+
+                      <div className={Styles.paymentDate}>
+                        <p>12/12/2023</p>
+                        <p> | TXN ID SBI00037</p>
+                      </div>
                     </div>
                     <div className={Styles.paymentDate}>
-                      <p>12/12/2023 </p>
-                      <p> | TXN ID SBI00037</p>
+                        <p>Bonus: 0</p>
+                        <p>Credit by</p>
+                      </div>
+                  </div>
+                  <div className={Styles.paymentbox}>
+                    <div className={Styles.paymentboxchild}>
+                      <div className={Styles.paymentStatus}>
+                        <p>Successful</p>
+                        <p>Rs 500</p>
+                      </div>
+
+                      <div className={Styles.paymentDate}>
+                        <p>12/12/2023</p>
+                        <p> | TXN ID SBI00037</p>
+                      </div>
                     </div>
                   </div>
                   <div className={Styles.paymentbox}>
-                    <div style={{ display: "flex",height:"50% "}}>
+                    <div className={Styles.paymentboxchild}>
                       <div className={Styles.paymentStatus}>
                         <p>Successful</p>
+                        <p>Rs 500</p>
                       </div>
-                      <p>Rs 500</p>
-                    </div>
-                    <div className={Styles.paymentDate}>
-                      <p>12/12/2023</p>
-                      <p> | TXN ID SBI00037</p>
+
+                      <div className={Styles.paymentDate}>
+                        <p>12/12/2023</p>
+                        <p> | TXN ID SBI00037</p>
+                      </div>
                     </div>
                   </div>
                   <div className={Styles.paymentbox}>
-                    <div style={{ display: "flex",height:"50% "}}>
+                    <div className={Styles.paymentboxchild}>
                       <div className={Styles.paymentStatus}>
                         <p>Successful</p>
+                        <p>Rs 500</p>
                       </div>
-                      <p>Rs 500</p>
-                    </div>
-                    <div className={Styles.paymentDate}>
-                      <p>12/12/2023</p>
-                      <p> | TXN ID SBI00037</p>
+
+                      <div className={Styles.paymentDate}>
+                        <p>12/12/2023</p>
+                        <p> | TXN ID SBI00037</p>
+                      </div>
                     </div>
                   </div>
                   <div className={Styles.paymentbox}>
-                    <div style={{ display: "flex",height:"50% "}}>
+                    <div className={Styles.paymentboxchild}>
                       <div className={Styles.paymentStatus}>
                         <p>Successful</p>
+                        <p>Rs 500</p>
                       </div>
-                      <p>Rs 500</p>
-                    </div>
-                    <div className={Styles.paymentDate}>
-                      <p>12/12/2023</p>
-                      <p> | TXN ID SBI00037</p>
+
+                      <div className={Styles.paymentDate}>
+                        <p>12/12/2023</p>
+                        <p> | TXN ID SBI00037</p>
+                      </div>
                     </div>
                   </div>
-                  <div className={Styles.paymentbox}>
-                    <div style={{ display: "flex",height:"50% "}}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                      </div>
-                      <p>Rs 500</p>
-                    </div>
-                    <div className={Styles.paymentDate}>
-                      <p>12/12/2023</p>
-                      <p> | TXN ID SBI00037</p>
-                    </div>
-                  </div>
-                 
                 </div>
               </CustomTabPanel>
             </Box>

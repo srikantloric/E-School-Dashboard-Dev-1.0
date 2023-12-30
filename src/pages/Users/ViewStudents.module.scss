@@ -22,8 +22,15 @@
     border-radius: 10px;
     margin: 1rem;
     background: #ffffff;
+    display: flex;
+    justify-content: space-between;
     
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.paymentboxchild{
+  display: flex;
+  flex-direction: column;
+  height:100% ;
 }
 .paymentcontain{
     background:linear-gradient(145deg, #e2e8ec, #ffffff);
@@ -36,7 +43,7 @@
     display: flex;
     align-items: flex-start;
 }
-.paymentStatus p{
+.paymentStatus p:nth-child(1){
     height: 28px;
     width: 90px;
     display: flex;
@@ -65,3 +72,4 @@
 .paymentDate p{
     margin-left: 3px;
 }
+
