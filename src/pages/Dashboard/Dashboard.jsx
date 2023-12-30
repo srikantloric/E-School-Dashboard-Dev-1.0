@@ -116,6 +116,10 @@ function Dashboard() {
             container
             justifyContent="space-between"
             className="card-container"
+            // sx={3}
+            // md={12}
+            // sm={3}
+            // style={{display:"flex",flexWrap:'wrap'}}
           >
             <CardDashboard
               headerTitle="27"
