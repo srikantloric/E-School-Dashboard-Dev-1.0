@@ -86,7 +86,7 @@ function ViewStudents() {
   const data = useSelector((state) => state.student.studentarray);
   const isDataLoading = useSelector((state) => state.student.loading);
   const error = useSelector((state) => state.student.error);
-  // console.log(loading)
+  console.log(data)
 
   const { enqueueSnackbar } = useSnackbar();
 

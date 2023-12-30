@@ -7,6 +7,12 @@ import Swal from "sweetalert2";
 import { FEMALE_DUMMY, MALE_DUMMY } from "../assets/dummyProfil";
 import FileResizer from "react-image-file-resizer";
 
+const resizeFile = (file) =>
+  new Promise((resolve) => {
+    FileResizer.imageFileResizer(file, 500, 500, "WEBP", 100, 0, (uri) => {
+      resolve(uri);
+    });
+  });
 //ADD STUDENT
 export const addstudent = createAsyncThunk(
   "add-students/addstudent",
@@ -14,13 +20,6 @@ export const addstudent = createAsyncThunk(
     let userPass = String(studentData.dob).split("-").reverse().join(""); //extracting password from dob
     const userEmail = "ops" + studentData.admission_no + "@ops.com"; // creating userID using admission no
     studentData["student_id"] = userEmail;
-
-    const resizeFile = (file) =>
-      new Promise((resolve) => {
-        FileResizer.imageFileResizer(file, 500, 500, "WEBP", 100, 0, (uri) => {
-          resolve(uri);
-        });
-      });
 
     // / Creating user in db
     return auth
@@ -145,30 +144,114 @@ export const deleltedata = createAsyncThunk(
 //UPDATE STUDENT
 export const updatedatastudent = createAsyncThunk(
   "student/updatestudent",
-  async ({ studentdata, imageupdate }) => {
-    db.collection("STUDENTS")
-      .doc(studentdata.id)
-      .set(studentdata)
-      .then(() => {
-        //uploading profile if changes
-        if (imageupdate) {
-          storageRef
-            .child(`images/${studentdata.email}`)
-            .put(imageupdate)
-            .then((snapshot) => {
-              Alert("Updated Successfully !");
-            })
-            .catch((e) => {
-              console.log("error while uploading image", e);
-            });
+  async ({ studentdata, imageupdate }, { rejectWithValue }) => {
+    let studentData = { ...studentdata };
+    try {
+      const res = await db
+        .collection("STUDENTS")
+        .doc(studentData.id)
+        .set(studentData);
+
+      if (imageupdate) {
+        console.log("updating new image..");
+
+        const fileRef = storageRef.child(
+          `profileImages/${studentData.id}/${studentData.email}`
+        );
+
+        const resizedImage = await resizeFile(imageupdate);
+        const uploadTask = await fileRef.putString(resizedImage, "data_url");
+        console.log(uploadTask.state);
+        if (uploadTask.state === "success") {
+          const url = await fileRef.getDownloadURL();
+          console.log(url);
+          console.log(studentData);
+          studentData["profil_url"] = url;
+          Alert("Updated Succesfully...");
+          return studentData;
         } else {
-          Alert("Updated Successfully !");
+          console.log("some went wrong while uploading image..");
         }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    return studentdata;
+      } else {
+        Alert("Updated Succesfully...");
+        return studentData;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    // return db
+    //   .collection("STUDENTS")
+    //   .doc(studentdata.id)
+    //   .set(studentdata)
+    //   .then(() => {
+    //     // console.log(studentdata);
+    //     //uploading profile if changes
+    //     if (imageupdate) {
+    //       console.log("uploading new profile..");
+    //       const fileRef = storageRef.child(
+    //         `profileImages/${studentdata.id}/${studentdata.email}`
+    //       );
+
+    //       resizeFile(imageupdate).then((img) => {
+    //         // const uploadTask = fileRef.put(img);
+    //         const uploadTask = fileRef.putString(img, "data_url");
+    //         uploadTask.on(
+    //           "state_changed",
+    //           function (snapshot) {},
+    //           function (error) {
+    //             console.log(error)
+    //           },
+    //           function () {
+    //             fileRef.getDownloadURL().then((url) => {
+    //               studentdata["profil_url"] = url;
+    //               let fData = {
+    //                 profil_url: url,
+    //                 time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
+    //               };
+    //               console.log(studentdata)
+    //               ///saving image url in doc
+    //               db
+    //                 .collection("STUDENTS")
+    //                 .doc(studentdata.id)
+    //                 .update(fData)
+    //                 .then(() => {
+    //                   Alert("Updated Successfully!");
+    //                 })
+    //                 .catch((er) => {
+    //                   console.log(er.message)
+    //                 });
+    //                 return studentdata;
+    //             });
+    //           }
+    //         );
+    //       });
+    //     } else {
+    //       return studentdata
+    //     }
+    // } else {
+    //   let fData = {
+    //     profil_url:
+    //       studentdata.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
+    //     time_stamp: firebase.firestore.FieldValue.serverTimestamp(),
+    //   };
+    //   return db
+    //     .collection("STUDENTS")
+    //     .doc(studentdata.id)
+    //     .update(fData)
+    //     .then(() => {
+    //       Alert("Updated Successfully!");
+    //       return "user image inserted successfully";
+    //     })
+    //     .catch((er) => {
+    //       return rejectWithValue(er);
+    //     });
+    // }
+    // })
+    // .catch((e) => {
+    //   console.log(e);
+    //   return -1;
+    // });
   }
 );
 
@@ -223,14 +306,17 @@ const studentslice = createSlice({
     [updatedatastudent.pending]: (state) => {
       state.loading = true;
     },
+
     [updatedatastudent.fulfilled]: (state, action) => {
       state.loading = false;
-      const { id, student } = action.payload;
+      const payload = action.payload;
+      console.log(payload);
       const studentindex = state.studentarray.findIndex(
-        (student) => student.id === id
+        (student) => student.id === payload.id
       );
       if (studentindex !== -1) {
-        state.studentarray[studentindex] = { id: id, student };
+        state.studentarray[studentindex] = payload;
+        console.log("sate updated");
       }
     },
     [updatedatastudent.rejected]: (state, action) => {
