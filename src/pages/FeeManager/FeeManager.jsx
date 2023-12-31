@@ -130,8 +130,7 @@ function FeeManager() {
             backgroundColor: "var(--bs-gray-201)",
             padding: "10px",
             borderRadius: "5px",
-            display: "flex"
-            
+            display: "flex",
           }}
         >
           <Breadcrumbs aria-label="breadcrumb">
