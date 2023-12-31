@@ -26,14 +26,13 @@ export const addstudent = createAsyncThunk(
       .createUserWithEmailAndPassword(userEmail, userPass)
       .then((user) => {
         const userId = user.user.uid;
-        studentData['id'] = userId;
+        studentData["id"] = userId;
         //adding user to db
         return db
           .collection("STUDENTS")
           .doc(userId)
           .set(studentData)
           .then((snapshot) => {
-
             ///uploading user profile in storage
             if (studentProfile) {
               const fileRef = storageRef.child(
@@ -53,8 +52,7 @@ export const addstudent = createAsyncThunk(
                       let fData = {
                         profil_url: url,
                       };
-                      studentData['profil_url'] = url;
-
+                      studentData["profil_url"] = url;
 
                       ///saving image url in doc
                       return db
@@ -76,14 +74,14 @@ export const addstudent = createAsyncThunk(
                 profil_url:
                   studentData.gender === "male" ? MALE_DUMMY : FEMALE_DUMMY,
               };
-              studentData['profil_url'] = fData.profil_url;
+              studentData["profil_url"] = fData.profil_url;
               ///saving image url in doc
               return db
                 .collection("STUDENTS")
                 .doc(userId)
                 .update(fData)
                 .then(() => {
-                  return studentData
+                  return studentData;
                 })
                 .catch((er) => {
                   return rejectWithValue(er);
@@ -126,7 +124,6 @@ export const fetchstudent = createAsyncThunk("student/fetchstudent", () => {
 export const deleltedata = createAsyncThunk(
   "student/deletestudent",
   async (id) => {
-   
     console.log("deleting Student:", id);
     return db
       .collection("STUDENTS")
@@ -199,7 +196,7 @@ const studentslice = createSlice({
 
     [addstudent.fulfilled]: (state, action) => {
       state.loading = false;
-      console.log("addstudent payload : ",action.payload)
+      console.log("addstudent payload : ", action.payload);
       state.studentarray.push(action.payload);
     },
     [addstudent.rejected]: (state, action) => {
