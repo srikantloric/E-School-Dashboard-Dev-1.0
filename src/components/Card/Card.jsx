@@ -3,6 +3,7 @@ import Styles from "./Cards.module.scss";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LOGO from "../../assets/logotransparent.png";
+import { Skeleton } from "@mui/joy";
 
 function Card({ facultyData }) {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ function Card({ facultyData }) {
     navigate(`/Faculties/${data}`);
   };
 
+  console.log(facultyData);
+
   return (
     <>
       <div className={Styles.cardContainer}>
@@ -18,7 +21,9 @@ function Card({ facultyData }) {
           <img
             className={Styles.facultyImage}
             src={facultyData.faculty_image}
+            loading="lazy"
           ></img>
+
           {facultyData.leader ? (
             <img className={Styles.badge} src={LOGO}></img>
           ) : null}

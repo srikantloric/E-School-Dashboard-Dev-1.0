@@ -66,7 +66,7 @@ function FeeManager() {
   const historyRef = useNavigate();
 
   const dispatch = useDispatch();
-  const data = Array.from(useSelector((state) => state.student.studentarray));
+  const data = Array.from(useSelector((state) => state.students.studentarray));
 
   const [searchList, setSearchList] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
