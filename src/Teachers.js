@@ -9,6 +9,8 @@ const teachersArray = [
     faculty_qualification: "M.A B.Ed (geography)",
     faculty_address:
       "Vishwanath nurshing home,Near Kali Manda, Panch Mandir,Barmasiya,Giridih,Jharkhand - 815301",
+    faculty_image_thumb:
+      "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Frakesh_sir_thumb.png?alt=media&token=394a9fc7-cd7a-4f73-bec0-2fdb66d41d47",
     faculty_image:
       "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Frakesh_sir.jpg?alt=media&token=f6e978cf-17d2-4f8c-b5d8-e6709ada1273",
   },
@@ -21,6 +23,8 @@ const teachersArray = [
     faculty_aadhar: "",
     faculty_qualification: "M.A B.Ed (History)",
     faculty_address: "Sihidih,Kabir Gyan Mandir,Giridih,Jharkhand - 815301",
+    faculty_image_thumb:
+      "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Fpraveen_sir_thumb.png?alt=media&token=0f643307-e67a-4c7c-b1c0-cad83fad2cdd",
     faculty_image:
       "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Fpraveen_sir.jpg?alt=media&token=b3847a2b-cdab-4fe3-951e-0c17ff39cec8",
   },
@@ -59,6 +63,8 @@ const teachersArray = [
     leader: true,
     faculty_qualification: "M.A, B.Ed, Jharkhand TET Quialified",
     faculty_address: "Kalyandih,P.O -Pachamba, Giridih, Jharkhand-815312",
+    faculty_image_thumb:
+      "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Fabhinash_kumar_saw_thumb.png?alt=media&token=3299527c-62f8-4344-8bd4-135c7be0b630",
     faculty_image:
       "https://firebasestorage.googleapis.com/v0/b/orient-public-school.appspot.com/o/facultyProfiles%2Fabhinash_kumar_saw-removebg.png?alt=media&token=793cd1a7-58be-47a5-8f74-d56adc96e161",
   },

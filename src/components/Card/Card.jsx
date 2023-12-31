@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Styles from "./Cards.module.scss";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -7,22 +7,37 @@ import { Skeleton } from "@mui/joy";
 
 function Card({ facultyData }) {
   const navigate = useNavigate();
+  const [imageLoaded, setImageLoaded] = useState();
 
   const FacultyDetail = (data) => {
     navigate(`/Faculties/${data}`);
   };
 
   console.log(facultyData);
+  const handleImageOnLoad = () => {
+    setImageLoaded(true);
+    console.log("loaded");
+  };
 
   return (
     <>
       <div className={Styles.cardContainer}>
         <div className={Styles.cardHeader}>
-          <img
-            className={Styles.facultyImage}
-            src={facultyData.faculty_image}
-            loading="lazy"
-          ></img>
+          <div
+            className={Styles.blurLoading}
+            style={{
+              backgroundImage: `url(${facultyData.faculty_image_thumb})`,
+            }}
+          >
+            <img
+              className={`${Styles.facultyImage} ${
+                imageLoaded && Styles.loaded
+              }`}
+              src={facultyData.faculty_image}
+              loading="lazy"
+              onLoad={handleImageOnLoad}
+            ></img>
+          </div>
 
           {facultyData.leader ? (
             <img className={Styles.badge} src={LOGO}></img>

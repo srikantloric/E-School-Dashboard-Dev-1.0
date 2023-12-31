@@ -19,13 +19,24 @@
   }
 }
 
-.cardHeader .facultyImage {
+.blurLoading {
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+}
+
+.blurLoading .facultyImage {
+  opacity: 0;
   border-radius: 50%;
   width: 90px;
   height: 90px;
   object-fit: cover;
   object-position: top;
   // border: 1px solid var(--bs-gray-300);
+}
+
+.blurLoading .loaded {
+  opacity: 1;
 }
 .cardHeader {
   position: relative;
