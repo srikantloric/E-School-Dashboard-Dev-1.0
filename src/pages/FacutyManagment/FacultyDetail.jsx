@@ -9,7 +9,7 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import GrainIcon from "@mui/icons-material/Grain";
 import Styles from "./FacultiesDetails.module.scss";
 import PersonIcon from "@mui/icons-material/Person";
-import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import { enqueueSnackbar } from "notistack";
 import {
   Box,
@@ -94,7 +94,7 @@ function FacultyDetail() {
   const [value, setValue] = React.useState(0);
   const [feeDetails, setFeeDetails] = useState([]);
   const [loading, setLoading] = useState(false);
-  const data = useSelector((state) => state.teacher.teacherArray);
+  const data = useSelector((state) => state.teachers.teacherArray);
   useEffect(() => {
     if (id) {
       const sigledata = data.filter((ele) => ele.id === id);
@@ -203,7 +203,6 @@ function FacultyDetail() {
                 {id}
               </Typography>
             </Breadcrumbs>
-          
           </Paper>
 
           <br></br>
@@ -219,7 +218,7 @@ function FacultyDetail() {
             <div style={{ display: "flex" }}>
               <div>
                 <img
-                  src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+                  src={teacherData && teacherData.faculty_image}
                   height="100%"
                   width={100}
                   style={{ objectFit: "cover" }}
@@ -232,28 +231,27 @@ function FacultyDetail() {
                   {teacherData && teacherData.faculty_name}
                 </h4>
 
-                <div style={{ marginTop: "1.1rem",display:"flex" }}>
+                <div style={{ marginTop: "1.1rem", display: "flex" }}>
                   <div>
-                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
-                      Date Of Birth 
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
+                      Date Of Birth
                     </p>
-                    <p style={{ padding: 3, margin: 0,fontSize: "14px", }}>
-                      Date Of Joining 
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
+                      Date Of Joining
                     </p>
-                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
-                      Contact 
-                     
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
+                      Contact
                     </p>
                   </div>
                   <div>
-                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
                       : {teacherData && teacherData.dob}
                     </p>
-                    <p style={{ padding: 3, margin: 0,fontSize: "14px", }}>
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
                       : {teacherData && teacherData.doj}
                     </p>
-                    <p style={{ padding: 3, margin: 0 ,fontSize: "14px",}}>
-                      : +91-{teacherData && teacherData.faculty_phone_number}
+                    <p style={{ padding: 3, margin: 0, fontSize: "14px" }}>
+                      : +91-{teacherData && teacherData.faculty_phone}
                     </p>
                   </div>
                 </div>
@@ -295,7 +293,10 @@ function FacultyDetail() {
                 </tr>
                 <tr>
                   <td>Employ Id:</td>
-                  <td>{teacherData && teacherData.faculty_id}</td>
+                  <td>
+                    {teacherData &&
+                      teacherData.faculty_email.split("@")[0].toUpperCase()}
+                  </td>
                 </tr>
                 <tr>
                   <td>Birth Date:</td>

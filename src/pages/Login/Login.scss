@@ -16,14 +16,14 @@
   height: 100%;
   overflow: hidden;
   color: var(--bs-light);
-  background: linear-gradient(to top, #374884 0%,#50619e 100%);
- 
-  img{
+  background: linear-gradient(to top, #374884 0%, #50619e 100%);
+
+  img {
     width: 100%;
     opacity: 0.05;
   }
 
-  div{
+  div {
     position: absolute;
     color: var(--color-white);
     font-weight: 8;
@@ -31,13 +31,12 @@
     flex-direction: column;
     align-items: center;
 
-    h2{
+    h2 {
       margin: 0;
       padding: 0;
       font-size: 30px;
-
     }
-    p{
+    p {
       text-align: center;
       width: 60%;
       font-size: 17px;
@@ -104,7 +103,7 @@
     background-color: var(--bs-link-hover-color);
   }
 
-  &:disabled{
+  &:disabled {
     opacity: 0.5;
   }
 }
@@ -126,15 +125,22 @@
 .input-field {
   padding: 0px;
 }
-.custom-checkbox-root .MuiSvgIcon-root{
+.custom-checkbox-root .MuiSvgIcon-root {
   width: 20px;
   height: 20px;
-
 }
 
-.footer-content{
-  position:absolute;
+.footer-content {
+  position: absolute;
   bottom: 0;
   margin-bottom: 10px;
   font-size: 14px;
+}
+
+////responsive behavi. control.
+
+@media screen and (max-width: 1080px) {
+  .left-section {
+    display: none;
+  }
 }

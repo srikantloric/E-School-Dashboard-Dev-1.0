@@ -6,14 +6,15 @@ import teachersArray from "../Teachers";
 export const fetchTeacher = createAsyncThunk("teachers/fetchTeacher", () => {
   // return teachersArray;
   return db
-    .collection("Faculty")
+    .collection("FACULTIES")
     .get()
     .then((snap) => {
       const teachers = [];
       snap.forEach((doc) => {
         teachers.push({ ...doc.data(), id: doc.id });
       });
-      return teachersArray;
+      return teachers;
+      // return teachersArray;
     });
 });
 

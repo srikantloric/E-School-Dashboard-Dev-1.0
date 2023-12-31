@@ -13,7 +13,7 @@ function Card({ facultyData }) {
     navigate(`/Faculties/${data}`);
   };
 
-  console.log(facultyData);
+  // console.log(facultyData);
   const handleImageOnLoad = () => {
     setImageLoaded(true);
     console.log("loaded");
@@ -39,7 +39,7 @@ function Card({ facultyData }) {
             ></img>
           </div>
 
-          {facultyData.leader ? (
+          {facultyData.is_from_management && imageLoaded ? (
             <img className={Styles.badge} src={LOGO}></img>
           ) : null}
         </div>
