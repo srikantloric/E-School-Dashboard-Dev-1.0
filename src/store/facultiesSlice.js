@@ -1,47 +1,43 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { db } from "../firebase";
-
+import teachersArray from "../Teachers";
 
 //FETCH
-export const fetchteacher = createAsyncThunk(
-  "teacher/fetchteacher",
-   () => {
-    return db
-    .collection("Faculty")
+export const fetchTeacher = createAsyncThunk("teachers/fetchTeacher", () => {
+  // return teachersArray;
+  return db
+    .collection("FACULTIES")
     .get()
     .then((snap) => {
       const teachers = [];
-        snap.forEach((doc) => {
-          teachers.push({ ...doc.data(), id: doc.id });
-        });
-        console.log(teachers)
-        return teachers;
-        
-      })
+      snap.forEach((doc) => {
+        teachers.push({ ...doc.data(), id: doc.id });
+      });
 
-   }
-);
+      return teachers;
+      // return teachersArray;
+    });
+});
 
 const facultiesSlice = createSlice({
-  name: "teacher",
+  name: "teachers",
   initialState: {
     teacherArray: [],
     loading: false,
     error: null,
   },
-  extraReducers:{
-    [fetchteacher.pending]: (state) => {
+  extraReducers: {
+    [fetchTeacher.pending]: (state, action) => {
       state.loading = true;
     },
-    [fetchteacher.fulfilled]: (state, action) => {
+    [fetchTeacher.fulfilled]: (state, action) => {
       state.loading = false;
       state.teacherArray = action.payload;
-
     },
-    [fetchteacher.rejected]: (state, action) => {
+    [fetchTeacher.rejected]: (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     },
-  }
+  },
 });
 export default facultiesSlice.reducer;

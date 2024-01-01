@@ -97,7 +97,7 @@ function Login() {
           <img src={DashboardConfig.logo} alt="logo" className="logo" />
           <h2>Orient Public School</h2>
           <p>
-            Welcome to School Management Dashboard: Elevating Education
+            Welcome to School Management Dashboard Elevating Education
             Effortlessly!
           </p>
           <form className="form-control" onSubmit={handleOnSubmit}>
@@ -175,7 +175,7 @@ function Login() {
           </form>
         </div>
         <span className="footer-content">
-          Loric <span style={{ color: "blue" }}>Softwares</span>| Copyright
+          Loric <span style={{ color: "blue" }}>Softwares</span> | Copyright
           1999-2023. All Rights Reserved.
         </span>
       </div>

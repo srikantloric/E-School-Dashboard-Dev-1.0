@@ -1,6 +1,6 @@
 import Dashboard from "../../pages/Dashboard/Dashboard";
 import Students from "../../pages/Users/Students";
-import Faculties from "../../pages/Users/Faculties";
+import Faculties from "../../pages/FacutyManagment/Faculties";
 import Attendance from "../../pages/Attendance/Attendance";
 import { IconCoinRupee, IconDashboard, IconFingerprint, IconFriends, IconMail, IconNotes, IconPoint, IconReceipt2, IconUsers } from "@tabler/icons-react";
 import AddStudent from "../../pages/Users/AddStudent";

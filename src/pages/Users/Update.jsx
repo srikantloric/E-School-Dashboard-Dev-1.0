@@ -43,7 +43,7 @@ function UpdateStudent() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [profileImage, setProfileimage] = useState("");
   const [loading, setLoading] = useState(false);
-  const users = useSelector((state) => state.student.studentarray);
+  const users = useSelector((state) => state.students.studentarray);
   const [editable, setEditable] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -112,7 +112,6 @@ function UpdateStudent() {
       .then((msg) => {
         if (msg) {
           setEditable(false);
-          
         }
       });
   };
@@ -639,9 +638,8 @@ function UpdateStudent() {
                   <Button
                     sx={{
                       height: "3em",
-                      background: "var(--bs-danger2)",
                     }}
-                    variant="contained"
+                    variant="outlined"
                     disableElevation={true}
                     onClick={canclebutton}
                   >
@@ -656,7 +654,7 @@ function UpdateStudent() {
                     type="submit"
                     disableElevation={true}
                   >
-                    Update Profil
+                    Update Profile
                   </Button>
                 </Grid>
               </Grid>

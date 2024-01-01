@@ -27,7 +27,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchstudent } from "../../store/studentSlice";
 import { enqueueSnackbar } from "notistack";
 
-
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -67,7 +66,7 @@ function FeeManager() {
   const historyRef = useNavigate();
 
   const dispatch = useDispatch();
-  const data = Array.from(useSelector((state) => state.student.studentarray));
+  const data = Array.from(useSelector((state) => state.students.studentarray));
 
   const [searchList, setSearchList] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -116,7 +115,9 @@ function FeeManager() {
       });
     } else {
       // alert("select student")
-      enqueueSnackbar("Error : Please enter student id or admission number !", { variant:"error"});
+      enqueueSnackbar("Error : Please enter student id or admission number !", {
+        variant: "error",
+      });
     }
   };
 
@@ -129,9 +130,9 @@ function FeeManager() {
             backgroundColor: "var(--bs-gray-201)",
             padding: "10px",
             borderRadius: "5px",
+            display: "flex",
           }}
         >
-            
           <Breadcrumbs aria-label="breadcrumb">
             <a
               style={{
@@ -189,7 +190,7 @@ function FeeManager() {
                 id="country-select-demo"
                 color="primary"
                 onChange={(e, val) => {
-                  setSelectedDoc(val.id);
+                  setSelectedDoc(val && val.id);
                 }}
                 placeholder="Search with Student ID/Admission No"
                 // slotProps={{

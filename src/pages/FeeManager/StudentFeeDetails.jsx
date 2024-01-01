@@ -32,10 +32,10 @@ import QuickPaymentModal from "./utilities/QuickPaymentModal";
 function StudentFeeDetails() {
   const [modelOpen, setModelOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  // let selectedRow = null;
   const [feeDetails, setFeeDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [paymentRemarks, setPaymentRemarks] = useState("");
-
   const historyRef = useNavigate();
   const location = useLocation();
 
@@ -46,9 +46,14 @@ function StudentFeeDetails() {
   const handleMenuClick = (event, rowData) => {
     setAnchorEll(event.currentTarget);
     setSelectedRow(rowData);
-    setPaymentRemarks(selectedRow.payment_remarks);
-    console.log(rowData);
   };
+
+  useEffect(() => {
+    if (selectedRow) {
+      setPaymentRemarks(selectedRow.payment_remarks);
+    }
+  }, [selectedRow]);
+
   const handleMenuClose = () => {
     setAnchorEll(null);
   };
@@ -262,7 +267,7 @@ function StudentFeeDetails() {
               icon: () => <EditIcon sx={{ color: "var(--bs-primary)" }} />,
               tooltip: "Edit Row",
               onClick: (event, rowData) => {
-                handleMenuClick(event);
+                // handleMenuClick(event);
               },
             },
             {
@@ -357,6 +362,10 @@ function StudentFeeDetails() {
           userPaymentData={location.state[0]}
           modelOpen={modelOpen}
           setModelOpen={setModelOpen}
+          paymentRemarks={paymentRemarks}
+          setPaymentRemarks={setPaymentRemarks}
+          // paymentDate={paymentDate}
+          // setPaymentDate={setPaymentDate}
         />
       </LSPage>
     </PageContainer>

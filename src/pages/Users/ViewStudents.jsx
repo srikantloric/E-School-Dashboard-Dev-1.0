@@ -84,9 +84,9 @@ function a11yProps(index) {
 }
 
 function ViewStudents() {
-  const data = useSelector((state) => state.student.studentarray);
-  const isDataLoading = useSelector((state) => state.student.loading);
-  const error = useSelector((state) => state.student.error);
+  const data = useSelector((state) => state.students.studentarray);
+  const isDataLoading = useSelector((state) => state.students.loading);
+  const error = useSelector((state) => state.students.error);
 
   const { enqueueSnackbar } = useSnackbar();
 

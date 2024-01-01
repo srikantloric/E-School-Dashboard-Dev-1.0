@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import PrintIcon from "@mui/icons-material/Print";
 import {
@@ -22,9 +22,10 @@ function QuickPaymentModal({
   userPaymentData,
   modelOpen,
   setModelOpen,
+  paymentRemarks,
+  setPaymentRemarks,
 }) {
-  function getCurrentDate() {
-    const dateObj = new Date();
+  function getCurrentDate(dateObj) {
     const currDate =
       dateObj.getFullYear() +
       "-" +
@@ -39,10 +40,31 @@ function QuickPaymentModal({
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [sendSms, setSendSMS] = useState(true);
   const [paidAmountError, setPaidAmountError] = useState(false);
-  const [paymentMode, setPaymentMode] = useState("cash");
+  const [paymentMode, setPaymentMode] = useState();
   const [paidAmount, setPaidAmount] = useState();
-  const [paymentDate, setPaymentDate] = useState(getCurrentDate());
-  const [paymentRemarks, setPaymentRemarks] = useState("");
+  const [paymentDate, setPaymentDate] = useState(getCurrentDate(new Date()));
+  const [paymentStatus, setPaymentStatus] = useState();
+  // const [paymentRemarks, setPaymentRemarks] = useState("");
+  const [dueAmount, setDueAmount] = useState();
+
+  useEffect(() => {
+    if (selectedRowData) {
+      const due =
+        parseInt(selectedRowData.fee_total) -
+        parseInt(selectedRowData.paid_amount) +
+        parseInt(selectedRowData.late_fee);
+
+      setPaymentDate(getCurrentDate(selectedRowData.payment_date.toDate()));
+      setDueAmount(due);
+      setPaymentMode(selectedRowData.payment_mode);
+
+      if (due === 0) {
+        setPaymentStatus(true);
+      } else {
+        setPaymentStatus(false);
+      }
+    }
+  }, [selectedRowData]);
 
   const handlePayBtn = () => {
     setPaymentLoading(true);
@@ -54,13 +76,8 @@ function QuickPaymentModal({
         payment_mode: paymentMode,
         paid_amount:
           parseInt(selectedRowData.paid_amount) + parseInt(paidAmount),
-        due_amount: selectedRowData.due_amount - paidAmount,
-        payment_status: "paid",
       };
-      // console.log("sss",selectedRowData, location.state[0].id);
-      console.log(new Date(paymentDate));
       if (userPaymentData.id && selectedRowData.doc_id) {
-        console.log("called");
         db.collection("STUDENTS")
           .doc(userPaymentData.id)
           .collection("PAYMENTS")
@@ -68,21 +85,7 @@ function QuickPaymentModal({
           .update(paymentData)
           .then((data) => {
             setPaymentLoading(false);
-
-            const dueAmountI = selectedRowData.due_amount - paidAmount;
-            selectedRowData.due_amount = dueAmountI;
-
-            if (dueAmountI === 0) {
-              //   setselectedRowData((prevState) => ({
-              //     ...prevState,
-              //     ["payment_status"]: "paid",
-              //   }));
-            } else {
-              //   setselectedRowData((prevState) => ({
-              //     ...prevState,
-              //     ["payment_status"]: "partially paid",
-              //   }));
-            }
+            setPaymentStatus(true)
           });
       }
     } else {
@@ -164,9 +167,7 @@ function QuickPaymentModal({
                       onChange={(e) => {
                         setPaymentRemarks(e.currentTarget.value);
                       }}
-                      disabled={
-                        selectedRowData.payment_status === "paid" ? true : false
-                      }
+                      disabled={paymentStatus}
                       placeholder="Please enter remark for payment"
                     />
                     <FormHelperText>{remarkError}</FormHelperText>
@@ -175,9 +176,7 @@ function QuickPaymentModal({
                   <FormControl sx={{ mt: 1 }}>
                     <FormLabel required>Payment Date</FormLabel>
                     <Input
-                      disabled={
-                        selectedRowData.payment_status === "paid" ? true : false
-                      }
+                      disabled={paymentStatus}
                       type="date"
                       value={paymentDate}
                       required
@@ -187,24 +186,10 @@ function QuickPaymentModal({
                   <FormControl sx={{ mt: 1 }}>
                     <FormLabel required>Send SMS</FormLabel>
                     <Select defaultValue="yes">
-                      <Option
-                        value="no"
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
-                      >
+                      <Option value="no" disabled={paymentStatus}>
                         No
                       </Option>
-                      <Option
-                        value="yes"
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
-                      >
+                      <Option value="yes" disabled={paymentStatus}>
                         Yes
                       </Option>
                     </Select>
@@ -212,29 +197,15 @@ function QuickPaymentModal({
                   <FormControl sx={{ mt: 1 }}>
                     <FormLabel required>Mode Of Payment</FormLabel>
                     <Select
-                      defaultValue="cash"
+                      value={paymentMode}
                       onChange={(e, newVal) => {
                         setPaymentMode(newVal);
                       }}
                     >
-                      <Option
-                        value="cash"
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
-                      >
+                      <Option value="cash" disabled={paymentStatus}>
                         Cash
                       </Option>
-                      <Option
-                        value="online"
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
-                      >
+                      <Option value="online" disabled={paymentStatus}>
                         Online
                       </Option>
                     </Select>
@@ -250,7 +221,7 @@ function QuickPaymentModal({
                 }}
               >
                 <Typography level="h3" sx={{ color: "var(--bs-danger2)" }}>
-                  Rs. {selectedRowData.due_amount}
+                  Rs. {dueAmount}
                   <span
                     style={{
                       fontSize: "14px",
@@ -263,17 +234,13 @@ function QuickPaymentModal({
                 </Typography>
 
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  {selectedRowData.payment_status === "paid" ? (
+                  {paymentStatus ? (
                     <Button startDecorator={<PrintIcon />}>Print Recipt</Button>
                   ) : (
                     <>
                       <Typography>Pay -</Typography>
                       <Input
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
+                        disabled={paymentStatus}
                         placeholder="enter amount"
                         value={paidAmount}
                         error={paidAmountError}
@@ -290,11 +257,7 @@ function QuickPaymentModal({
                         color="success"
                         loading={paymentLoading}
                         onClick={handlePayBtn}
-                        disabled={
-                          selectedRowData.payment_status === "paid"
-                            ? true
-                            : false
-                        }
+                        disabled={paymentStatus}
                       >
                         Pay Now
                       </Button>
@@ -303,7 +266,7 @@ function QuickPaymentModal({
                 </div>
               </div>
             </div>
-            {selectedRowData.payment_status === "paid" ? (
+            {paymentStatus ? (
               <img
                 style={{ position: "absolute", top: 70, right: 50 }}
                 height={100}
@@ -312,7 +275,9 @@ function QuickPaymentModal({
             ) : null}
           </Sheet>
         </Modal>
-      ) : null}
+      ) : (
+        "loading"
+      )}
     </div>
   );
 }
