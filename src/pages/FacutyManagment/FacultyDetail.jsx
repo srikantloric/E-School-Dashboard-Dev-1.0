@@ -135,7 +135,7 @@ function FacultyDetail() {
     // console.log(location.state[0]);
     if (userDocId) {
       const dbSubscriptions = db
-        .collection("Faculty")
+        .collection("FACULTIES")
         .doc(userDocId)
         .collection("Payment")
         .onSnapshot((snapshot) => {
@@ -284,6 +284,10 @@ function FacultyDetail() {
                   <td>{teacherData && teacherData.faculty_name}</td>
                 </tr>
                 <tr>
+                  <td>Gender:</td>
+                  <td>{teacherData && teacherData.faculty_gender}</td>
+                </tr>
+                <tr>
                   <td>Father Name:</td>
                   <td>{teacherData && teacherData.faculty_father_name}</td>
                 </tr>
@@ -313,17 +317,14 @@ function FacultyDetail() {
             <Paper sx={{ padding: "1rem" }}>
               <table className={Styles.table}>
                 <tr>
-                  <td>Degree:</td>
-                  <td>{teacherData && teacherData.faculty_degree}</td>
+                  <td>Qualification:</td>
+                  <td>{teacherData && teacherData.faculty_qualification}</td>
                 </tr>
                 <tr>
                   <td>Specification Subject:</td>
                   <td>{teacherData && teacherData.faculty_specification}</td>
                 </tr>
-                <tr>
-                  <td>Collage:</td>
-                  <td>{teacherData && teacherData.faculty_pastoutcollege}</td>
-                </tr>
+               
                 <tr>
                   <td>Previous Job:</td>
                   <td>{teacherData && teacherData.faculty_id}</td>
@@ -342,7 +343,17 @@ function FacultyDetail() {
           <CustomTabPanel value={value} index={2}>
             <div className={Styles.address_container}>
               <div className={Styles.address_container_leftbar}></div>
-              <div className={Styles.address_container_mainsection}></div>
+              <div className={Styles.address_container_mainsection}>
+              
+              <table className={Styles.table}>
+                <tr>
+                  <td>Adress:</td>
+                  <td>{teacherData && teacherData.faculty_address}</td>
+                </tr>
+                
+              </table>
+           
+              </div>
             </div>
           </CustomTabPanel>
           <CustomTabPanel
