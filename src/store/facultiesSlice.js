@@ -13,6 +13,7 @@ export const fetchTeacher = createAsyncThunk("teachers/fetchTeacher", () => {
       snap.forEach((doc) => {
         teachers.push({ ...doc.data(), id: doc.id });
       });
+
       return teachers;
       // return teachersArray;
     });
