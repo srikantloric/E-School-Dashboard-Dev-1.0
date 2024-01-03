@@ -178,6 +178,10 @@ export const updatedatastudent = createAsyncThunk(
     }
   }
 );
+// student paymentfetch
+
+
+
 
 const studentslice = createSlice({
   name: "student",
@@ -248,6 +252,7 @@ const studentslice = createSlice({
       state.loading = false;
       state.error = action.payload.message;
     },
+    
   },
   //   extraReducers: (builder) => {
   //     builder.addCase(addstudent.pending, (state) => {
