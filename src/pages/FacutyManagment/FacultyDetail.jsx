@@ -277,7 +277,7 @@ function FacultyDetail() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <Paper sx={{ padding: "1rem" }}>
+            
               <table className={Styles.table}>
                 <tr>
                   <td>Name:</td>
@@ -292,8 +292,8 @@ function FacultyDetail() {
                   <td>{teacherData && teacherData.faculty_father_name}</td>
                 </tr>
                 <tr>
-                  <td>School Number:</td>
-                  <td></td>
+                  <td>Aadhar Number:</td>
+                  <td>{teacherData && teacherData.faculty_aadhar}</td>
                 </tr>
                 <tr>
                   <td>Employ Id:</td>
@@ -311,10 +311,10 @@ function FacultyDetail() {
                   <td>{teacherData && teacherData.cast}</td>
                 </tr>
               </table>
-            </Paper>
+            
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <Paper sx={{ padding: "1rem" }}>
+           
               <table className={Styles.table}>
                 <tr>
                   <td>Qualification:</td>
@@ -338,7 +338,7 @@ function FacultyDetail() {
                   <td>{teacherData && teacherData.cast}</td>
                 </tr>
               </table>
-            </Paper>
+            
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
             <div className={Styles.address_container}>
@@ -347,7 +347,7 @@ function FacultyDetail() {
               
               <table className={Styles.table}>
                 <tr>
-                  <td>Adress:</td>
+                  <td>Permanent Address:</td>
                   <td>{teacherData && teacherData.faculty_address}</td>
                 </tr>
                 
@@ -361,35 +361,7 @@ function FacultyDetail() {
             value={value}
             index={3}
           >
-            {/* <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Dessert (100g serving)</TableCell>
-                    <TableCell align="right">Calories</TableCell>
-                    <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                    <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                    <TableCell align="right">Protein&nbsp;(g)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer> */}
+            
             {feeDetails.map(paymentdetail)}
           </CustomTabPanel>
         </LSPage>

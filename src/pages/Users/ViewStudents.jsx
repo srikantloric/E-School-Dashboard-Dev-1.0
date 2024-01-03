@@ -48,6 +48,8 @@ import { MoreVert } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 import { useSnackbar } from "notistack";
 import ConfirmationModal from "../../components/Modals/ConfirmationModal";
+import { fetchstudentPayement } from "../../store/studentPaymentSlice";
+import { db } from "../../firebase";
 
 //tabs
 function CustomTabPanel(props) {
@@ -94,6 +96,7 @@ function ViewStudents() {
 
   const [filteredData, setFilteredData] = useState(Array.from(data));
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [filterChip, setFilterChip] = useState(false);
   const [filterChipLabel, setFilterChipLabel] = useState();
 
@@ -111,13 +114,17 @@ function ViewStudents() {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [selectedStudentUID, setSelectedStudentUID] = useState();
   const [deleteLoading, setDeleteLoading] = useState(false);
-
+  //payment
+  const [feeDetail, setFeeDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
   ///menu state
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const handleMenuClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(rowData);
+    setSelectedId(rowData.id);
+    console.log(rowData.id);
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -157,7 +164,38 @@ function ViewStudents() {
       setFilteredData(data);
     }
   }, [isDataLoading]);
+  useEffect(() => {
+    setLoading(true);
+    const userDocId = selectedId;
 
+    if (userDocId) {
+      const dbPayemnt = db
+        .collection("STUDENTS")
+        .doc(userDocId)
+        .collection("PAYMENTS")
+        .onSnapshot((snapshot) => {
+          if (snapshot.size) {
+            var feeArr = [];
+            snapshot.forEach((doc) => {
+              const dataMod = {
+                id: doc.data().payement_id,
+              };
+              feeArr.push(doc.data());
+            });
+
+            setFeeDetails(feeArr);
+            console.log(feeDetail);
+            setLoading(false);
+          } else {
+            enqueueSnackbar("Something went wrong !", { variant: "error" });
+          }
+        });
+      return () => dbPayemnt();
+    } else {
+      setLoading(false);
+      enqueueSnackbar("User document not found !", { variant: "error" });
+    }
+  }, [selectedId,selectedRow]);
   const handleFilterButton = () => {
     if (selectedClass !== -1 && selectedSection !== -1) {
       let dataNew = data.filter((data) => {
@@ -206,6 +244,28 @@ function ViewStudents() {
   const navigate = useNavigate();
   const updatestudent = (student) => {
     navigate(`/update-student/${student.id}`);
+  };
+  //payment detail
+  const paymentdetailStudent = (paymentcards, index) => {
+    return (
+      <div className={Styles.paymentbox}>
+        <div className={Styles.paymentboxchild}>
+          <div className={Styles.paymentStatus}>
+            <p>Successful</p>
+            <p>Rs {paymentcards.paid_amount}</p>
+          </div>
+
+          <div className={Styles.paymentDate}>
+            <p>11/12/2023</p>
+            <p> | TXN ID {paymentcards.id}</p>
+          </div>
+        </div>
+        <div className={Styles.paymentBonus}>
+          <p>Late Fine: {paymentcards.late_fee}</p>
+          <p>Credit by:{paymentcards.credit_by}</p>
+        </div>
+      </div>
+    );
   };
 
   //column for material table
@@ -562,7 +622,7 @@ function ViewStudents() {
                 </Box>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                <Paper sx={{ padding: "1rem" }}>
+               
                   <table className={Styles.table}>
                     <tr>
                       <td>Name:</td>
@@ -589,10 +649,10 @@ function ViewStudents() {
                       <td>{selectedRow.cast}</td>
                     </tr>
                   </table>
-                </Paper>
+                
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
-                <Paper sx={{ padding: "10px" }}>
+                
                   <table className={Styles.table}>
                     <tr>
                       <td>Father Name:</td>
@@ -623,8 +683,7 @@ function ViewStudents() {
                       <td>{selectedRow.Contactnumber}</td>
                     </tr>
                   </table>
-                </Paper>
-              </CustomTabPanel>
+                              </CustomTabPanel>
               <CustomTabPanel value={value} index={2}>
                 Exam Mark
               </CustomTabPanel>
@@ -633,77 +692,7 @@ function ViewStudents() {
                 value={value}
                 index={3}
               >
-                <div>
-                  <div className={Styles.paymentbox}>
-                    <div className={Styles.paymentboxchild}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                        <p>Rs 500</p>
-                      </div>
-
-                      <div className={Styles.paymentDate}>
-                        <p>12/12/2023</p>
-                        <p> | TXN ID SBI00037</p>
-                      </div>
-                    </div>
-                    <div className={Styles.paymentDate}>
-                      <p>Bonus: 0</p>
-                      <p>Credit by</p>
-                    </div>
-                  </div>
-                  <div className={Styles.paymentbox}>
-                    <div className={Styles.paymentboxchild}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                        <p>Rs 500</p>
-                      </div>
-
-                      <div className={Styles.paymentDate}>
-                        <p>12/12/2023</p>
-                        <p> | TXN ID SBI00037</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={Styles.paymentbox}>
-                    <div className={Styles.paymentboxchild}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                        <p>Rs 500</p>
-                      </div>
-
-                      <div className={Styles.paymentDate}>
-                        <p>12/12/2023</p>
-                        <p> | TXN ID SBI00037</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={Styles.paymentbox}>
-                    <div className={Styles.paymentboxchild}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                        <p>Rs 500</p>
-                      </div>
-
-                      <div className={Styles.paymentDate}>
-                        <p>12/12/2023</p>
-                        <p> | TXN ID SBI00037</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={Styles.paymentbox}>
-                    <div className={Styles.paymentboxchild}>
-                      <div className={Styles.paymentStatus}>
-                        <p>Successful</p>
-                        <p>Rs 500</p>
-                      </div>
-
-                      <div className={Styles.paymentDate}>
-                        <p>12/12/2023</p>
-                        <p> | TXN ID SBI00037</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div>{feeDetail.map(paymentdetailStudent)}</div>
               </CustomTabPanel>
             </Box>
           </Modal>
