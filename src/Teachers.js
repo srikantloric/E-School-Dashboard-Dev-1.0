@@ -1,7 +1,6 @@
 const teachersArray = [
   {
     id: "5555465",
-    index: 0,
     faculty_name: "Rakesh Kumar",
     faculty_specification: "Assistant teacher SST.",
     faculty_phone: "9939613718",
@@ -17,7 +16,6 @@ const teachersArray = [
   },
   {
     id: "265665",
-    index: 1,
     faculty_name: "Praveen Kumar",
     faculty_specification: "Science Teacher",
     faculty_phone: "6203019769",
@@ -32,7 +30,6 @@ const teachersArray = [
   },
   {
     id: "424242",
-    index: 2,
     faculty_name: "Priya Kumari",
     faculty_specification: "Maths Teacher",
     faculty_phone: "7766081598",
@@ -46,7 +43,6 @@ const teachersArray = [
   },
   {
     id: "4244343",
-    index: 3,
     faculty_name: "Md. Akhlaque Ansari",
     faculty_specification: "Assistant Teacher Maths",
     faculty_phone: "7870238423",
@@ -59,7 +55,6 @@ const teachersArray = [
   },
   {
     id: "4244343",
-    index: 4,
     faculty_name: "Avinash Kumar Saw",
     faculty_specification: "Maths Teacher",
     faculty_phone: "9199736005",
@@ -75,7 +70,6 @@ const teachersArray = [
   },
   {
     id: "6565554",
-    index: 5,
     faculty_name: "Surendra Pd. Yadav",
     faculty_specification: "Maths Teacher",
     faculty_phone: "9572572581",
@@ -88,7 +82,6 @@ const teachersArray = [
   },
   {
     id: "5466644",
-    index: 6,
     faculty_name: "Kajal Kumari",
     faculty_specification: "Hindi Teacher",
     faculty_phone: "6299409080",
@@ -101,7 +94,6 @@ const teachersArray = [
   },
   {
     id: "945151",
-    index: 7,
     faculty_name: "Kundan Kumar",
     faculty_specification: "English Teacher",
     faculty_phone: "62998220529",
@@ -115,7 +107,6 @@ const teachersArray = [
   },
   {
     id: "656644",
-    index: 8,
     faculty_name: "Shrishti Kumari",
     faculty_specification: "Hindi Teacher",
     faculty_phone: "9798471369",
@@ -129,7 +120,6 @@ const teachersArray = [
   },
   {
     id: "456565",
-    index: 9,
     faculty_name: "Umakant Verma",
     faculty_specification: "Math/Hindi/English Teacher",
     faculty_phone: "9709298390",
@@ -143,7 +133,6 @@ const teachersArray = [
   },
   {
     id: "9891154",
-    index: 10,
     faculty_name: "Saibun Nisha",
     faculty_specification: "Math/Hindi Teacher",
     faculty_phone: "9693155930",
@@ -156,7 +145,6 @@ const teachersArray = [
   },
   {
     id: "65665",
-    index: 11,
     faculty_name: "Sandeep Gupta",
     faculty_specification: "_ Teacher",
     faculty_phone: "6200694373",

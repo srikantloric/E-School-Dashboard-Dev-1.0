@@ -25,7 +25,7 @@ import GrainIcon from "@mui/icons-material/Grain";
 import BarChart from "../../components/Graph/BarGraphChart";
 import BarGraphChart from "../../components/Graph/BarGraphChart";
 import { Pages } from "@mui/icons-material";
-import style from "./Dashboard.module.scss"
+import style from "./Dashboard.module.scss";
 import Card2 from "../../components/Card/Card2";
 import { enqueueSnackbar } from "notistack";
 
@@ -62,12 +62,7 @@ export const options = {
   },
 };
 
-
-
 function Dashboard() {
- 
-
-
   return (
     <>
       <PageContainer>
@@ -116,6 +111,8 @@ function Dashboard() {
             container
             justifyContent="space-between"
             className="card-container"
+            // sx={{}}
+            // md={4}
             // sx={3}
             // md={12}
             // sm={3}
@@ -173,17 +170,14 @@ function Dashboard() {
             />
           </Grid>
         </LSPage>
-        <Divider/>
+        <Divider />
         <div className={style.dashboard_graph_container}>
           <div className={style.left_panel}>
             <h5>Month Wise Paid/Unpaid Fee Report For Current Year</h5>
-          <BarGraphChart />
+            <BarGraphChart />
           </div>
-          <div className={style.right_panel}>
-            {/* <Card2/> */}
-          </div>
+          <div className={style.right_panel}>{/* <Card2/> */}</div>
         </div>
-        
 
         <Footer />
       </PageContainer>
