@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import LSPage from "../../components/Utils/LSPage";
 import {
@@ -11,7 +10,6 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import "../Dashboard/Dashboard.scss";
 import CardDashboard from "../../components/Card/CardDashboard";
 import faker from "faker";
@@ -22,12 +20,8 @@ import Footer from "../../components/Footer/Footer";
 //
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GrainIcon from "@mui/icons-material/Grain";
-import BarChart from "../../components/Graph/BarGraphChart";
 import BarGraphChart from "../../components/Graph/BarGraphChart";
-import { Pages } from "@mui/icons-material";
 import style from "./Dashboard.module.scss";
-import Card2 from "../../components/Card/Card2";
-import { enqueueSnackbar } from "notistack";
 
 Chart.register(CategoryScale);
 
@@ -111,12 +105,6 @@ function Dashboard() {
             container
             justifyContent="space-between"
             className="card-container"
-            // sx={{}}
-            // md={4}
-            // sx={3}
-            // md={12}
-            // sm={3}
-            // style={{display:"flex",flexWrap:'wrap'}}
           >
             <CardDashboard
               headerTitle="27"

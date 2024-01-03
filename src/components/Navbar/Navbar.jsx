@@ -21,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { Logout, Settings } from "@mui/icons-material";
 import { auth } from "../../firebase";
+import { Box } from "@mui/joy";
 
 function Navbar() {
   const [screenSize, setScreenSize] = useState(getCurrentDimension());
@@ -88,38 +89,44 @@ function Navbar() {
             </IconButton>
           </Tooltip>
 
-          <div className="search-box">
-            <IconSearch className="search-iconn" size={28} />
-            <span>Search..</span>
-            <div>Ctrl+K</div>
-          </div>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <div className="search-box">
+              <IconSearch className="search-iconn" size={28} />
+              <span>Search..</span>
+              <div>Ctrl+K</div>
+            </div>
+          </Box>
         </div>
+
         <div className="navbar-rightsection">
-          <div className="rounded-bg">
-            <Tooltip title="Night Mode">
-              <IconButton>
-                <IconMoon size={22} />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div className="rounded-bg">
-            <Tooltip title="Message">
-              <IconButton aria-label={notificationsLabel(100)}>
-                <Badge badgeContent={1} color="success">
-                  <IconBell size={22} />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div className="rounded-bg">
-            <Tooltip title="Message">
-              <IconButton aria-label={notificationsLabel(100)}>
-                <Badge badgeContent={0} color="primary">
-                  <IconMessage2 size={22} />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </div>
+          <Box sx={{ display: { xs: "none", sm: "none", md: "flex" } }}>
+            <div className="rounded-bg">
+              <Tooltip title="Night Mode">
+                <IconButton>
+                  <IconMoon size={22} />
+                </IconButton>
+              </Tooltip>
+            </div>
+
+            <div className="rounded-bg">
+              <Tooltip title="Message">
+                <IconButton aria-label={notificationsLabel(100)}>
+                  <Badge badgeContent={1} color="success">
+                    <IconBell size={22} />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+            </div>
+            <div className="rounded-bg">
+              <Tooltip title="Message">
+                <IconButton aria-label={notificationsLabel(100)}>
+                  <Badge badgeContent={0} color="primary">
+                    <IconMessage2 size={22} />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+            </div>
+          </Box>
           <Tooltip title="Account settings">
             <IconButton
               onClick={handleClick}
