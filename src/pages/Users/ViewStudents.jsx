@@ -17,6 +17,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import Styles from "./ViewStudents.module.scss";
@@ -27,6 +28,7 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import GrainIcon from "@mui/icons-material/Grain";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
+import CheckIcon from "@mui/icons-material/Check";
 import BlockIcon from "@mui/icons-material/Block";
 
 import {
@@ -44,12 +46,13 @@ import Swal from "sweetalert2";
 import MaterialTable from "@material-table/core";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { MoreVert } from "@mui/icons-material";
+import { Filter, MoreVert } from "@mui/icons-material";
 import { IconEdit } from "@tabler/icons-react";
 import { useSnackbar } from "notistack";
 import ConfirmationModal from "../../components/Modals/ConfirmationModal";
 import { fetchstudentPayement } from "../../store/studentPaymentSlice";
 import { db } from "../../firebase";
+import { Card, Table } from "@mui/joy";
 
 //tabs
 function CustomTabPanel(props) {
@@ -64,7 +67,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ pt: 3 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -143,9 +146,9 @@ function ViewStudents() {
     width: "60%",
     minHeight: "550px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
-    p: 4,
+    borderRadius: 1,
+    p: 3,
   };
 
   useEffect(() => {
@@ -195,7 +198,7 @@ function ViewStudents() {
       setLoading(false);
       enqueueSnackbar("User document not found !", { variant: "error" });
     }
-  }, [selectedId,selectedRow]);
+  }, [selectedId, selectedRow]);
   const handleFilterButton = () => {
     if (selectedClass !== -1 && selectedSection !== -1) {
       let dataNew = data.filter((data) => {
@@ -248,23 +251,65 @@ function ViewStudents() {
   //payment detail
   const paymentdetailStudent = (paymentcards, index) => {
     return (
-      <div className={Styles.paymentbox}>
-        <div className={Styles.paymentboxchild}>
-          <div className={Styles.paymentStatus}>
-            <p>Successful</p>
-            <p>Rs {paymentcards.paid_amount}</p>
+      <Card
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          height: "100px",
+
+          backgroundColor: "var( --bs-success-border-subtle)",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <Chip
+              avatar={
+                <CheckIcon style={{ color: "white", fontSize: "12px" }} />
+              }
+              label="Paid"
+              sx={{
+                backgroundColor: "var(--bs-success)",
+                fontSize: "15px",
+                color: "#fff",
+              }}
+            ></Chip>
+            <h5 style={{ fontSize: "19px" }}>
+              &#8377;{paymentcards.paid_amount}
+            </h5>
           </div>
 
           <div className={Styles.paymentDate}>
             <p>11/12/2023</p>
-            <p> | TXN ID {paymentcards.id}</p>
+            <p>TXN ID {paymentcards.id}</p>
           </div>
         </div>
-        <div className={Styles.paymentBonus}>
-          <p>Late Fine: {paymentcards.late_fee}</p>
-          <p>Credit by:{paymentcards.credit_by}</p>
+        <div
+          className={Styles.paymentRightPart}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            alignItems: "flex-end",
+          }}
+        >
+          <h4>Late Fine: {paymentcards.late_fee}</h4>
+          <p>Credited By {paymentcards.credit_by.toUpperCase()}</p>
         </div>
-      </div>
+      </Card>
     );
   };
 
@@ -579,34 +624,67 @@ function ViewStudents() {
             sx={{ minHeight: "400px" }}
           >
             <Box sx={style}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <div style={{ display: "flex" }}>
-                  <div style={{ marginTop: "10px" }}>
-                    <img
-                      src={selectedRow.profil_url}
-                      height={100}
-                      width={90}
-                      style={{ objectFit: "cover" }}
-                    />
-                  </div>
-                  <div style={{ padding: "5px 15px" }}>
-                    <h3>{selectedRow.student_name}</h3>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src={selectedRow.profil_url}
+                  width={90}
+                  height="100%"
+                  style={{ objectFit: "cover" }}
+                />
 
-                    <div style={{ marginTop: "1rem" }}>
+                <div
+                  style={{
+                    padding: "0px 10px",
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontSize={20}
+                    fontWeight={700}
+                    sx={{ margin: 0, p: 0 }}
+                  >
+                    {selectedRow.student_name.toUpperCase()}
+                  </Typography>
+
+                  <div
+                    style={{
+                      backgroundColor: "var(--bs-secondary)",
+                      color: "#fff",
+                      display: "flex",
+                      width: "100%",
+                      padding: "6px",
+                      fontSize: "15px",
+                    }}
+                  >
+                    <div>
+                      <p style={{ padding: 3, margin: 0 }}>Date Of Birth</p>
+                      <p style={{ padding: 3, margin: 0 }}>Date Of Admission</p>
+                      <p style={{ padding: 3, margin: 0 }}>Contact</p>
+                    </div>
+                    <div>
                       <p style={{ padding: 3, margin: 0 }}>
-                        Date Of Birth:{selectedRow.dob}
+                        : {selectedRow.dob}
                       </p>
                       <p style={{ padding: 3, margin: 0 }}>
-                        Date Of Admission : {selectedRow.date_of_addmission}
+                        : {selectedRow.date_of_addmission}
                       </p>
                       <p style={{ padding: 3, margin: 0 }}>
-                        Contact : +91-7979080633
+                        : {selectedRow.Contactnumber}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div></div>
               </div>
+
               <Box sx={{ width: "100%" }}>
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <Tabs
@@ -622,76 +700,74 @@ function ViewStudents() {
                 </Box>
               </Box>
               <CustomTabPanel value={value} index={0}>
-               
-                  <table className={Styles.table}>
-                    <tr>
-                      <td>Name:</td>
-                      <td>{selectedRow.student_name}</td>
-                    </tr>
-                    <tr>
-                      <td>Class:</td>
-                      <td>{selectedRow.class}</td>
-                    </tr>
-                    <tr>
-                      <td>Roll No:</td>
-                      <td>{selectedRow.class_roll}</td>
-                    </tr>
-                    <tr>
-                      <td>Student Id:</td>
-                      <td>{selectedRow.student_id}</td>
-                    </tr>
-                    <tr>
-                      <td>Birth Date:</td>
-                      <td>{selectedRow.dob}</td>
-                    </tr>
-                    <tr>
-                      <td>Cast:</td>
-                      <td>{selectedRow.cast}</td>
-                    </tr>
-                  </table>
-                
+                <Table>
+                  <tr>
+                    <td>Name</td>
+                    <td>{selectedRow.student_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Class</td>
+                    <td>{selectedRow.class}</td>
+                  </tr>
+                  <tr>
+                    <td>Roll No</td>
+                    <td>{selectedRow.class_roll}</td>
+                  </tr>
+                  <tr>
+                    <td>Student Id</td>
+                    <td>{selectedRow.student_id}</td>
+                  </tr>
+                  <tr>
+                    <td>Birth Date</td>
+                    <td>{selectedRow.dob}</td>
+                  </tr>
+                  <tr>
+                    <td>Cast</td>
+                    <td>{selectedRow.cast}</td>
+                  </tr>
+                </Table>
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
-                
-                  <table className={Styles.table}>
-                    <tr>
-                      <td>Father Name:</td>
-                      <td>{selectedRow.father_name}</td>
-                    </tr>
-                    <tr>
-                      <td>Father Occupation:</td>
-                      <td>{selectedRow.father_occupation}</td>
-                    </tr>
-                    <tr>
-                      <td>Father Qulifiation:</td>
-                      <td>{selectedRow.father_qualification}</td>
-                    </tr>
-                    <tr>
-                      <td>Mother Name:</td>
-                      <td>{selectedRow.mother_name}</td>
-                    </tr>
-                    <tr>
-                      <td>Mother Occupation:</td>
-                      <td>{selectedRow.mother_occupation}</td>
-                    </tr>
-                    <tr>
-                      <td>Mother Qulification:</td>
-                      <td>{selectedRow.motherqualifiation}</td>
-                    </tr>
-                    <tr>
-                      <td>Contact Number:</td>
-                      <td>{selectedRow.Contactnumber}</td>
-                    </tr>
-                  </table>
-                              </CustomTabPanel>
+                <Table>
+                  <tr>
+                    <td>Father Name</td>
+                    <td>{selectedRow.father_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Father Occupation</td>
+                    <td>{selectedRow.father_occupation}</td>
+                  </tr>
+                  <tr>
+                    <td>Father Qulifiation</td>
+                    <td>{selectedRow.father_qualification}</td>
+                  </tr>
+                  <tr>
+                    <td>Mother Name</td>
+                    <td>{selectedRow.mother_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Mother Occupation</td>
+                    <td>{selectedRow.mother_occupation}</td>
+                  </tr>
+                  <tr>
+                    <td>Mother Qulification</td>
+                    <td>{selectedRow.motherqualifiation}</td>
+                  </tr>
+                  <tr>
+                    <td>Contact Number</td>
+                    <td>{selectedRow.Contactnumber}</td>
+                  </tr>
+                </Table>
+              </CustomTabPanel>
               <CustomTabPanel value={value} index={2}>
                 Exam Mark
               </CustomTabPanel>
-              <CustomTabPanel
-                className={Styles.paymentcontain}
-                value={value}
-                index={3}
-              >
+              <CustomTabPanel value={value} index={3}>
+                {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <IconButton variant="solid">
+                    <FilterAltIcon />
+                  </IconButton>
+                </div> */}
                 <div>{feeDetail.map(paymentdetailStudent)}</div>
               </CustomTabPanel>
             </Box>
