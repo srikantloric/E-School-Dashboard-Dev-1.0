@@ -93,86 +93,88 @@ function Login() {
         </div>
       </div>
       <div className="right-section">
-        <div className="login-card">
-          <img src={DashboardConfig.logo} alt="logo" className="logo" />
-          <h2>Orient Public School</h2>
-          <p>
-            Welcome to School Management Dashboard Elevating Education
-            Effortlessly!
-          </p>
-          <form className="form-control" onSubmit={handleOnSubmit}>
-            <FormControl
-              className="input-field"
-              sx={{ width: "100%", mb: 2 }}
-              variant="outlined"
-            >
-              <InputLabel htmlFor="outlined-adornment-username">
-                Username
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-username"
-                type="email"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <AccountCircleIcon />
-                  </InputAdornment>
-                }
-                label="Username"
-              />
-            </FormControl>
-
-            <FormControl sx={{ width: "100%", mb: 2 }} variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={visibility ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                      onClick={() => setVisibility(!visibility)}
-                    >
-                      {visibility ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Password"
-              />
-            </FormControl>
-            <div className="auth-recovery">
-              <FormGroup sx={{ ml: 1 }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox classes={{ root: "custom-checkbox-root" }} />
+        <div style={{ display: "flex", flex: 1 }}>
+          <div className="login-card">
+            <img src={DashboardConfig.logo} alt="logo" className="logo" />
+            <h2>Orient Public School</h2>
+            <p>
+              Welcome to School Management Dashboard Elevating Education
+              Effortlessly!
+            </p>
+            <form className="form-control" onSubmit={handleOnSubmit}>
+              <FormControl
+                className="input-field"
+                sx={{ width: "100%", mb: 2 }}
+                variant="outlined"
+              >
+                <InputLabel htmlFor="outlined-adornment-username">
+                  Username
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-username"
+                  type="email"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <AccountCircleIcon />
+                    </InputAdornment>
                   }
-                  label="Remember me"
+                  label="Username"
                 />
-              </FormGroup>
-              <span>
-                <a href="#">Account Recovery</a>
-              </span>
-            </div>
-            {error ? (
-              <Box>
-                <p style={{ color: "red" }}>{error}</p>
-              </Box>
-            ) : (
-              ""
-            )}
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <CircularProgress size={30} />
-              </Box>
-            ) : null}
-            <button disabled={loading}>Login</button>
-          </form>
+              </FormControl>
+
+              <FormControl sx={{ width: "100%", mb: 2 }} variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={visibility ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        edge="end"
+                        onClick={() => setVisibility(!visibility)}
+                      >
+                        {visibility ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+              <div className="auth-recovery">
+                <FormGroup sx={{ ml: 1 }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox classes={{ root: "custom-checkbox-root" }} />
+                    }
+                    label="Remember me"
+                  />
+                </FormGroup>
+                <span>
+                  <a href="#">Account Recovery</a>
+                </span>
+              </div>
+              {error ? (
+                <Box>
+                  <p style={{ color: "red" }}>{error}</p>
+                </Box>
+              ) : (
+                ""
+              )}
+              {loading ? (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <CircularProgress size={30} />
+                </Box>
+              ) : null}
+              <button disabled={loading}>Login</button>
+            </form>
+          </div>
         </div>
         <span className="footer-content">
           Loric <span style={{ color: "blue" }}>Softwares</span> | Copyright
